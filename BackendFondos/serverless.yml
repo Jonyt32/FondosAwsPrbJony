@@ -1,0 +1,148 @@
+service: backend-fondos
+
+#frameworkVersion: '3'
+
+
+provider:
+  name: aws
+  runtime: dotnet6
+  region: us-east-1
+  memorySize: 256
+  timeout: 10
+  architecture: x86_64
+  environment:
+    DYNAMODB_TABLE_CLIENTES: Clientes
+    DYNAMODB_TABLE_FONDOS: Fondos
+    DYNAMODB_TABLE_TRANSACCIONES: Transacciones
+
+
+functions:
+  crearCliente:
+    handler: Lambdas/CrearCliente::BackendFondos.Lambdas.CrearCliente.LambdaEntryPoint::FunctionHandler
+    events:
+      - http:
+          path: clientes/crear-clientes
+          method: post
+    #documentation:
+    #  summary: "Crear un nuevo cliente"
+    #  description: "Registra un cliente con nombre, email y preferencias de notificación"
+    #  requestModels:
+    #    "application/json": "ClienteDto"
+    #  responseModels:
+    #    "application/json": "EmptyResponse"
+
+  crearFondo:
+    handler: Lambdas/CrearFondo::BackendFondos.Lambdas.CrearFondo.LambdaEntryPoint::FunctionHandler
+    events:
+      - http:
+          path: fondos/crear-fondos
+          method: post
+    #documentation:
+    #  summary: "Crear un nuevo fondo"
+    #  description: "Registra un fondo con nombre, categoría y monto mínimo"
+    #  requestModels:
+    #    "application/json": "FondoDto"
+    #  responseModels:
+    #    "application/json": "EmptyResponse"
+
+  suscribirClienteAFondo:
+    handler: Lambdas/SuscribirClienteAFondo::BackendFondos.Lambdas.SuscribirClienteAFondo.LambdaEntryPoint::FunctionHandler
+    events:
+      - http:
+          path: suscripciones/generar-susbcripcion
+          method: post
+    #documentation:
+    #  summary: "Suscribir cliente a fondo"
+    #  description: "Asocia un cliente a un fondo específico"
+    #  requestModels:
+    #    "application/json": "SuscripcionRequestDto"
+    #  responseModels:
+    #    "application/json": "ResultadoOperacionDto"
+
+  cancelarSuscripcion:
+    handler: Lambdas/CancelarSuscripcion::BackendFondos.Lambdas.CancelarSuscripcion.LambdaEntryPoint::FunctionHandler
+    events:
+      - http:
+          path: cancelaciones/cancelar-suscripcion
+          method: post
+    #documentation:
+    #  summary: "Cancelar suscripción de cliente"
+    #  description: "Elimina la relación entre cliente y fondo"
+    #  requestModels:
+    #    "application/json": "CancelacionRequestDto"
+    #  responseModels:
+    #    "application/json": "ResultadoOperacionDto"
+
+  actualizarSaldoCliente:
+    handler: Lambdas/ActualizarSaldoCliente::BackendFondos.Lambdas.ActualizarSaldoCliente.LambdaEntryPoint::FunctionHandler
+    events:
+      - http:
+          path: clientes/saldo/actualizar-saldo
+          method: put
+    #documentation:
+    #  summary: "Actualizar saldo del cliente"
+    #  description: "Modifica el saldo disponible del cliente"
+    #  requestModels:
+    #    "application/json": "ActualizarSaldoRequestDto"
+    #  responseModels:
+    #    "application/json": "ClienteDto"
+
+  consultarFondos:
+    handler: Lambdas/ConsultarFondos::BackendFondos.Lambdas.ConsultarFondos.LambdaEntryPoint::FunctionHandler
+    package:
+      artifact: ../publish.zip
+    events:
+      - http:
+          path: fondos/consultar-fondos
+          method: get
+    #documentation:
+    #  summary: "Consultar todos los fondos"
+    #  description: "Devuelve la lista completa de fondos disponibles"
+    #  responseModels:
+    #    "application/json": "FondoDto[]"
+
+  consultarTransacciones:
+    handler: Lambdas/ConsultarTransacciones::BackendFondos.Lambdas.ConsultarTransacciones.LambdaEntryPoint::FunctionHandler
+    events:
+      - http:
+          path: transacciones/{clientId}
+          method: get
+    #documentation:
+    #  summary: "Consultar transacciones por cliente"
+    #  description: "Devuelve todas las transacciones realizadas por un cliente"
+    #  pathParams:
+    #    - name: clientId
+    #      description: "ID del cliente"
+    #      required: true
+    #      type: string
+    #  responseModels:
+    #    "application/json": "TransaccionDto[]"
+
+  fondosAsignadosCliente:
+    handler: Lambdas/FondosAsignadosCliente::BackendFondos.Lambdas.FondosAsignadosCliente.LambdaEntryPoint::FunctionHandler
+    events:
+      - http:
+          path: clientes/{id}/fondos
+          method: get
+    #documentation:
+    #  summary: "Consultar fondos asignados a cliente"
+    #  description: "Devuelve los fondos activos del cliente"
+    #  pathParams:
+    #    - name: id
+    #      description: "ID del cliente"
+    #      required: true
+    #      type: string
+    #  responseModels:
+    #    "application/json": "FondoDto[]"
+
+custom:
+  dotnet:
+    project: ../Amaris.sln
+
+
+plugins:
+  - serverless-dotnet
+  - serverless-dotenv-plugin
+  #- serverless-openapi-documentation
+  #- serverless-scriptable-plugin
+

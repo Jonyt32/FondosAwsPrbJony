@@ -1,0 +1,1687 @@
+{
+  "service": {
+    "service": "backend-fondos",
+    "serviceObject": {
+      "name": "backend-fondos"
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "dotnet6",
+      "region": "us-east-1",
+      "memorySize": 256,
+      "timeout": 10,
+      "architecture": "x86_64",
+      "environment": {
+        "DYNAMODB_TABLE_CLIENTES": "Clientes",
+        "DYNAMODB_TABLE_FONDOS": "Fondos",
+        "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+      },
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "CrearClienteLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-fondos-dev-crearCliente"
+            }
+          },
+          "CrearFondoLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-fondos-dev-crearFondo"
+            }
+          },
+          "SuscribirClienteAFondoLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-fondos-dev-suscribirClienteAFondo"
+            }
+          },
+          "CancelarSuscripcionLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-fondos-dev-cancelarSuscripcion"
+            }
+          },
+          "ActualizarSaldoClienteLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-fondos-dev-actualizarSaldoCliente"
+            }
+          },
+          "ConsultarFondosLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-fondos-dev-consultarFondos"
+            }
+          },
+          "ConsultarTransaccionesLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-fondos-dev-consultarTransacciones"
+            }
+          },
+          "FondosAsignadosClienteLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/backend-fondos-dev-fondosAsignadosCliente"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "backend-fondos",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/backend-fondos-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/backend-fondos-dev*:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "backend-fondos",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "CrearClienteLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+                "S3Key": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z/backend-fondos.zip"
+              },
+              "Handler": "Lambdas/CrearCliente::BackendFondos.Lambdas.CrearCliente.LambdaEntryPoint::FunctionHandler",
+              "Runtime": "dotnet6",
+              "FunctionName": "backend-fondos-dev-crearCliente",
+              "MemorySize": 256,
+              "Timeout": 10,
+              "Architectures": [
+                "x86_64"
+              ],
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE_CLIENTES": "Clientes",
+                  "DYNAMODB_TABLE_FONDOS": "Fondos",
+                  "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CrearClienteLogGroup"
+            ]
+          },
+          "CrearFondoLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+                "S3Key": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z/backend-fondos.zip"
+              },
+              "Handler": "Lambdas/CrearFondo::BackendFondos.Lambdas.CrearFondo.LambdaEntryPoint::FunctionHandler",
+              "Runtime": "dotnet6",
+              "FunctionName": "backend-fondos-dev-crearFondo",
+              "MemorySize": 256,
+              "Timeout": 10,
+              "Architectures": [
+                "x86_64"
+              ],
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE_CLIENTES": "Clientes",
+                  "DYNAMODB_TABLE_FONDOS": "Fondos",
+                  "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CrearFondoLogGroup"
+            ]
+          },
+          "SuscribirClienteAFondoLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+                "S3Key": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z/backend-fondos.zip"
+              },
+              "Handler": "Lambdas/SuscribirClienteAFondo::BackendFondos.Lambdas.SuscribirClienteAFondo.LambdaEntryPoint::FunctionHandler",
+              "Runtime": "dotnet6",
+              "FunctionName": "backend-fondos-dev-suscribirClienteAFondo",
+              "MemorySize": 256,
+              "Timeout": 10,
+              "Architectures": [
+                "x86_64"
+              ],
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE_CLIENTES": "Clientes",
+                  "DYNAMODB_TABLE_FONDOS": "Fondos",
+                  "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "SuscribirClienteAFondoLogGroup"
+            ]
+          },
+          "CancelarSuscripcionLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+                "S3Key": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z/backend-fondos.zip"
+              },
+              "Handler": "Lambdas/CancelarSuscripcion::BackendFondos.Lambdas.CancelarSuscripcion.LambdaEntryPoint::FunctionHandler",
+              "Runtime": "dotnet6",
+              "FunctionName": "backend-fondos-dev-cancelarSuscripcion",
+              "MemorySize": 256,
+              "Timeout": 10,
+              "Architectures": [
+                "x86_64"
+              ],
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE_CLIENTES": "Clientes",
+                  "DYNAMODB_TABLE_FONDOS": "Fondos",
+                  "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CancelarSuscripcionLogGroup"
+            ]
+          },
+          "ActualizarSaldoClienteLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+                "S3Key": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z/backend-fondos.zip"
+              },
+              "Handler": "Lambdas/ActualizarSaldoCliente::BackendFondos.Lambdas.ActualizarSaldoCliente.LambdaEntryPoint::FunctionHandler",
+              "Runtime": "dotnet6",
+              "FunctionName": "backend-fondos-dev-actualizarSaldoCliente",
+              "MemorySize": 256,
+              "Timeout": 10,
+              "Architectures": [
+                "x86_64"
+              ],
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE_CLIENTES": "Clientes",
+                  "DYNAMODB_TABLE_FONDOS": "Fondos",
+                  "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ActualizarSaldoClienteLogGroup"
+            ]
+          },
+          "ConsultarFondosLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+                "S3Key": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z/publish.zip"
+              },
+              "Handler": "Lambdas/ConsultarFondos::BackendFondos.Lambdas.ConsultarFondos.LambdaEntryPoint::FunctionHandler",
+              "Runtime": "dotnet6",
+              "FunctionName": "backend-fondos-dev-consultarFondos",
+              "MemorySize": 256,
+              "Timeout": 10,
+              "Architectures": [
+                "x86_64"
+              ],
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE_CLIENTES": "Clientes",
+                  "DYNAMODB_TABLE_FONDOS": "Fondos",
+                  "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ConsultarFondosLogGroup"
+            ]
+          },
+          "ConsultarTransaccionesLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+                "S3Key": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z/backend-fondos.zip"
+              },
+              "Handler": "Lambdas/ConsultarTransacciones::BackendFondos.Lambdas.ConsultarTransacciones.LambdaEntryPoint::FunctionHandler",
+              "Runtime": "dotnet6",
+              "FunctionName": "backend-fondos-dev-consultarTransacciones",
+              "MemorySize": 256,
+              "Timeout": 10,
+              "Architectures": [
+                "x86_64"
+              ],
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE_CLIENTES": "Clientes",
+                  "DYNAMODB_TABLE_FONDOS": "Fondos",
+                  "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ConsultarTransaccionesLogGroup"
+            ]
+          },
+          "FondosAsignadosClienteLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+                "S3Key": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z/backend-fondos.zip"
+              },
+              "Handler": "Lambdas/FondosAsignadosCliente::BackendFondos.Lambdas.FondosAsignadosCliente.LambdaEntryPoint::FunctionHandler",
+              "Runtime": "dotnet6",
+              "FunctionName": "backend-fondos-dev-fondosAsignadosCliente",
+              "MemorySize": 256,
+              "Timeout": 10,
+              "Architectures": [
+                "x86_64"
+              ],
+              "Environment": {
+                "Variables": {
+                  "DYNAMODB_TABLE_CLIENTES": "Clientes",
+                  "DYNAMODB_TABLE_FONDOS": "Fondos",
+                  "DYNAMODB_TABLE_TRANSACCIONES": "Transacciones"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "FondosAsignadosClienteLogGroup"
+            ]
+          },
+          "ConsultarFondosLambdaVersionllvyc7MhvvMaF6w8ORJ55ZRukoSuRbkimKDiOT3RVlk": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ConsultarFondosLambdaFunction"
+              },
+              "CodeSha256": "5hX+4ejAqKfyWVWnJoGMM6MOEoAEsmyw4ha5jh6LsxM="
+            }
+          },
+          "CrearClienteLambdaVersionczWRBPAJ1a2aBWvomCpn1p8sAG9InjBuBh6M0FfzYI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CrearClienteLambdaFunction"
+              },
+              "CodeSha256": "Rda/tlEfv2Qs1FA9In81KLldJkKGDD8HECJVVXiu/LY="
+            }
+          },
+          "CrearFondoLambdaVersiongpW2qs20SUUptwX8lffuqvGbQfERW5qQKYnf72kiw0": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CrearFondoLambdaFunction"
+              },
+              "CodeSha256": "Rda/tlEfv2Qs1FA9In81KLldJkKGDD8HECJVVXiu/LY="
+            }
+          },
+          "SuscribirClienteAFondoLambdaVersionqaBiybroXnj1uyCKT2Oj8ElXjADPn0HTd9ZNJzOM84": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "SuscribirClienteAFondoLambdaFunction"
+              },
+              "CodeSha256": "Rda/tlEfv2Qs1FA9In81KLldJkKGDD8HECJVVXiu/LY="
+            }
+          },
+          "CancelarSuscripcionLambdaVersionvOCWsrxeRvrNcSMARsDAH3HFSJCij6BbIKNtXZ6lTQw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CancelarSuscripcionLambdaFunction"
+              },
+              "CodeSha256": "Rda/tlEfv2Qs1FA9In81KLldJkKGDD8HECJVVXiu/LY="
+            }
+          },
+          "ActualizarSaldoClienteLambdaVersionnOhlk4ChZiMsEAvKA5bNnnpYy8ZuRsUbbMu77C1LTBw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ActualizarSaldoClienteLambdaFunction"
+              },
+              "CodeSha256": "Rda/tlEfv2Qs1FA9In81KLldJkKGDD8HECJVVXiu/LY="
+            }
+          },
+          "ConsultarTransaccionesLambdaVersionLoWuGNauy4yzRe06HZkXT4jewYScuZ0x5eP8wls": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ConsultarTransaccionesLambdaFunction"
+              },
+              "CodeSha256": "Rda/tlEfv2Qs1FA9In81KLldJkKGDD8HECJVVXiu/LY="
+            }
+          },
+          "FondosAsignadosClienteLambdaVersion2i2WP7g06Dp1kOWbif7mqcNozhpkzO6emGgHyOPjw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "FondosAsignadosClienteLambdaFunction"
+              },
+              "CodeSha256": "Rda/tlEfv2Qs1FA9In81KLldJkKGDD8HECJVVXiu/LY="
+            }
+          },
+          "ApiGatewayRestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+              "Name": "dev-backend-fondos",
+              "EndpointConfiguration": {
+                "Types": [
+                  "EDGE"
+                ]
+              },
+              "Policy": ""
+            }
+          },
+          "ApiGatewayResourceClientes": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "clientes",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceClientesCrearDashclientes": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceClientes"
+              },
+              "PathPart": "crear-clientes",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceClientesSaldo": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceClientes"
+              },
+              "PathPart": "saldo",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceClientesSaldoActualizarDashsaldo": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceClientesSaldo"
+              },
+              "PathPart": "actualizar-saldo",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceClientesIdVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceClientes"
+              },
+              "PathPart": "{id}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceClientesIdVarFondos": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceClientesIdVar"
+              },
+              "PathPart": "fondos",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceFondos": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "fondos",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceFondosCrearDashfondos": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceFondos"
+              },
+              "PathPart": "crear-fondos",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceFondosConsultarDashfondos": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceFondos"
+              },
+              "PathPart": "consultar-fondos",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceSuscripciones": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "suscripciones",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceSuscripcionesGenerarDashsusbcripcion": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceSuscripciones"
+              },
+              "PathPart": "generar-susbcripcion",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceCancelaciones": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "cancelaciones",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceCancelacionesCancelarDashsuscripcion": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceCancelaciones"
+              },
+              "PathPart": "cancelar-suscripcion",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceTransacciones": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "transacciones",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceTransaccionesClientidVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceTransacciones"
+              },
+              "PathPart": "{clientId}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodClientesCrearDashclientesPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceClientesCrearDashclientes"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "CrearClienteLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "CrearClienteLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodFondosCrearDashfondosPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFondosCrearDashfondos"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "CrearFondoLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "CrearFondoLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodSuscripcionesGenerarDashsusbcripcionPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceSuscripcionesGenerarDashsusbcripcion"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "SuscribirClienteAFondoLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "SuscribirClienteAFondoLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodCancelacionesCancelarDashsuscripcionPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceCancelacionesCancelarDashsuscripcion"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "CancelarSuscripcionLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "CancelarSuscripcionLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodClientesSaldoActualizarDashsaldoPut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceClientesSaldoActualizarDashsaldo"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ActualizarSaldoClienteLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ActualizarSaldoClienteLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodFondosConsultarDashfondosGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFondosConsultarDashfondos"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ConsultarFondosLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ConsultarFondosLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodTransaccionesClientidVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceTransaccionesClientidVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ConsultarTransaccionesLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ConsultarTransaccionesLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodClientesIdVarFondosGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceClientesIdVarFondos"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "FondosAsignadosClienteLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "FondosAsignadosClienteLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayDeployment1761592044526": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "StageName": "dev"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodClientesCrearDashclientesPost",
+              "ApiGatewayMethodFondosCrearDashfondosPost",
+              "ApiGatewayMethodSuscripcionesGenerarDashsusbcripcionPost",
+              "ApiGatewayMethodCancelacionesCancelarDashsuscripcionPost",
+              "ApiGatewayMethodClientesSaldoActualizarDashsaldoPut",
+              "ApiGatewayMethodFondosConsultarDashfondosGet",
+              "ApiGatewayMethodTransaccionesClientidVarGet",
+              "ApiGatewayMethodClientesIdVarFondosGet"
+            ]
+          },
+          "CrearClienteLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CrearClienteLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "CrearFondoLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CrearFondoLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "SuscribirClienteAFondoLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "SuscribirClienteAFondoLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "CancelarSuscripcionLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CancelarSuscripcionLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ActualizarSaldoClienteLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ActualizarSaldoClienteLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ConsultarFondosLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ConsultarFondosLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ConsultarTransaccionesLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ConsultarTransaccionesLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "FondosAsignadosClienteLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "FondosAsignadosClienteLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-1-440cc0ac-594d",
+            "Export": {
+              "Name": "sls-backend-fondos-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "ConsultarFondosLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ConsultarFondosLambdaVersionllvyc7MhvvMaF6w8ORJ55ZRukoSuRbkimKDiOT3RVlk"
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-ConsultarFondosLambdaFunctionQualifiedArn"
+            }
+          },
+          "CrearClienteLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CrearClienteLambdaVersionczWRBPAJ1a2aBWvomCpn1p8sAG9InjBuBh6M0FfzYI"
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-CrearClienteLambdaFunctionQualifiedArn"
+            }
+          },
+          "CrearFondoLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CrearFondoLambdaVersiongpW2qs20SUUptwX8lffuqvGbQfERW5qQKYnf72kiw0"
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-CrearFondoLambdaFunctionQualifiedArn"
+            }
+          },
+          "SuscribirClienteAFondoLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "SuscribirClienteAFondoLambdaVersionqaBiybroXnj1uyCKT2Oj8ElXjADPn0HTd9ZNJzOM84"
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-SuscribirClienteAFondoLambdaFunctionQualifiedArn"
+            }
+          },
+          "CancelarSuscripcionLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CancelarSuscripcionLambdaVersionvOCWsrxeRvrNcSMARsDAH3HFSJCij6BbIKNtXZ6lTQw"
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-CancelarSuscripcionLambdaFunctionQualifiedArn"
+            }
+          },
+          "ActualizarSaldoClienteLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ActualizarSaldoClienteLambdaVersionnOhlk4ChZiMsEAvKA5bNnnpYy8ZuRsUbbMu77C1LTBw"
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-ActualizarSaldoClienteLambdaFunctionQualifiedArn"
+            }
+          },
+          "ConsultarTransaccionesLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ConsultarTransaccionesLambdaVersionLoWuGNauy4yzRe06HZkXT4jewYScuZ0x5eP8wls"
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-ConsultarTransaccionesLambdaFunctionQualifiedArn"
+            }
+          },
+          "FondosAsignadosClienteLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "FondosAsignadosClienteLambdaVersion2i2WP7g06Dp1kOWbif7mqcNozhpkzO6emGgHyOPjw"
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-FondosAsignadosClienteLambdaFunctionQualifiedArn"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/dev"
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-backend-fondos-dev-ServiceEndpoint"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "custom": {
+      "dotnet": {
+        "project": "../Amaris.sln"
+      }
+    },
+    "plugins": [
+      "serverless-dotnet",
+      "serverless-dotenv-plugin"
+    ],
+    "pluginsData": {},
+    "functions": {
+      "crearCliente": {
+        "handler": "Lambdas/CrearCliente::BackendFondos.Lambdas.CrearCliente.LambdaEntryPoint::FunctionHandler",
+        "events": [
+          {
+            "http": {
+              "path": "clientes/crear-clientes",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-fondos-dev-crearCliente",
+        "package": {},
+        "memory": 256,
+        "timeout": 10,
+        "runtime": "dotnet6",
+        "vpc": {},
+        "versionLogicalId": "CrearClienteLambdaVersionczWRBPAJ1a2aBWvomCpn1p8sAG9InjBuBh6M0FfzYI"
+      },
+      "crearFondo": {
+        "handler": "Lambdas/CrearFondo::BackendFondos.Lambdas.CrearFondo.LambdaEntryPoint::FunctionHandler",
+        "events": [
+          {
+            "http": {
+              "path": "fondos/crear-fondos",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-fondos-dev-crearFondo",
+        "package": {},
+        "memory": 256,
+        "timeout": 10,
+        "runtime": "dotnet6",
+        "vpc": {},
+        "versionLogicalId": "CrearFondoLambdaVersiongpW2qs20SUUptwX8lffuqvGbQfERW5qQKYnf72kiw0"
+      },
+      "suscribirClienteAFondo": {
+        "handler": "Lambdas/SuscribirClienteAFondo::BackendFondos.Lambdas.SuscribirClienteAFondo.LambdaEntryPoint::FunctionHandler",
+        "events": [
+          {
+            "http": {
+              "path": "suscripciones/generar-susbcripcion",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-fondos-dev-suscribirClienteAFondo",
+        "package": {},
+        "memory": 256,
+        "timeout": 10,
+        "runtime": "dotnet6",
+        "vpc": {},
+        "versionLogicalId": "SuscribirClienteAFondoLambdaVersionqaBiybroXnj1uyCKT2Oj8ElXjADPn0HTd9ZNJzOM84"
+      },
+      "cancelarSuscripcion": {
+        "handler": "Lambdas/CancelarSuscripcion::BackendFondos.Lambdas.CancelarSuscripcion.LambdaEntryPoint::FunctionHandler",
+        "events": [
+          {
+            "http": {
+              "path": "cancelaciones/cancelar-suscripcion",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-fondos-dev-cancelarSuscripcion",
+        "package": {},
+        "memory": 256,
+        "timeout": 10,
+        "runtime": "dotnet6",
+        "vpc": {},
+        "versionLogicalId": "CancelarSuscripcionLambdaVersionvOCWsrxeRvrNcSMARsDAH3HFSJCij6BbIKNtXZ6lTQw"
+      },
+      "actualizarSaldoCliente": {
+        "handler": "Lambdas/ActualizarSaldoCliente::BackendFondos.Lambdas.ActualizarSaldoCliente.LambdaEntryPoint::FunctionHandler",
+        "events": [
+          {
+            "http": {
+              "path": "clientes/saldo/actualizar-saldo",
+              "method": "put",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-fondos-dev-actualizarSaldoCliente",
+        "package": {},
+        "memory": 256,
+        "timeout": 10,
+        "runtime": "dotnet6",
+        "vpc": {},
+        "versionLogicalId": "ActualizarSaldoClienteLambdaVersionnOhlk4ChZiMsEAvKA5bNnnpYy8ZuRsUbbMu77C1LTBw"
+      },
+      "consultarFondos": {
+        "handler": "Lambdas/ConsultarFondos::BackendFondos.Lambdas.ConsultarFondos.LambdaEntryPoint::FunctionHandler",
+        "package": {
+          "artifact": "../publish.zip"
+        },
+        "events": [
+          {
+            "http": {
+              "path": "fondos/consultar-fondos",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-fondos-dev-consultarFondos",
+        "memory": 256,
+        "timeout": 10,
+        "runtime": "dotnet6",
+        "vpc": {},
+        "versionLogicalId": "ConsultarFondosLambdaVersionllvyc7MhvvMaF6w8ORJ55ZRukoSuRbkimKDiOT3RVlk"
+      },
+      "consultarTransacciones": {
+        "handler": "Lambdas/ConsultarTransacciones::BackendFondos.Lambdas.ConsultarTransacciones.LambdaEntryPoint::FunctionHandler",
+        "events": [
+          {
+            "http": {
+              "path": "transacciones/{clientId}",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-fondos-dev-consultarTransacciones",
+        "package": {},
+        "memory": 256,
+        "timeout": 10,
+        "runtime": "dotnet6",
+        "vpc": {},
+        "versionLogicalId": "ConsultarTransaccionesLambdaVersionLoWuGNauy4yzRe06HZkXT4jewYScuZ0x5eP8wls"
+      },
+      "fondosAsignadosCliente": {
+        "handler": "Lambdas/FondosAsignadosCliente::BackendFondos.Lambdas.FondosAsignadosCliente.LambdaEntryPoint::FunctionHandler",
+        "events": [
+          {
+            "http": {
+              "path": "clientes/{id}/fondos",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "backend-fondos-dev-fondosAsignadosCliente",
+        "package": {},
+        "memory": 256,
+        "timeout": 10,
+        "runtime": "dotnet6",
+        "vpc": {},
+        "versionLogicalId": "FondosAsignadosClienteLambdaVersion2i2WP7g06Dp1kOWbif7mqcNozhpkzO6emGgHyOPjw"
+      }
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless",
+    "initialServerlessConfig": {
+      "service": "backend-fondos",
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "functions": {
+        "$ref": "$[\"service\"][\"functions\"]"
+      },
+      "custom": {
+        "$ref": "$[\"service\"][\"custom\"]"
+      },
+      "plugins": {
+        "$ref": "$[\"service\"][\"plugins\"]"
+      }
+    },
+    "appId": null,
+    "orgId": null,
+    "layers": {},
+    "artifact": "D:\\JonyTorres\\Pruebas Técnicas 2025\\Amaris\\BackendFondos\\.serverless\\backend-fondos.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/backend-fondos/dev/1761592065781-2025-10-27T19:07:45.781Z",
+    "artifact": "backend-fondos.zip"
+  }
+}

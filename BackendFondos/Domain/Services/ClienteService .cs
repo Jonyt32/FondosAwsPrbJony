@@ -1,0 +1,63 @@
+using BackendFondos.Domain.Entities;
+using BackendFondos.Domain.Repositories;
+using System;
+using System.Threading.Tasks;
+
+namespace BackendFondos.Domain.Services
+{
+    public class ClienteService : IClienteService
+    {
+        private readonly IClienteRepository _clienteRepo;
+
+        public ClienteService(IClienteRepository clienteRepo)
+        {
+            _clienteRepo = clienteRepo;
+        }
+
+        public async Task CrearClienteAsync(Cliente cliente)
+        {
+            // Generar un ID único si no viene definido
+            cliente.ClienteID ??= Guid.NewGuid().ToString();
+
+            if (string.IsNullOrWhiteSpace(cliente.ClienteID))
+                throw new InvalidOperationException("El ID del cliente es obligatorio");
+
+            if (cliente.Saldo < 0)
+                throw new InvalidOperationException("El saldo no puede ser negativo");
+
+            var existente = await _clienteRepo.ObtenerPorIdAsync(cliente.ClienteID);
+            if (existente != null)
+                throw new InvalidOperationException("El cliente ya existe");
+
+            cliente.PreferenciaNotificacion ??= "email";
+            cliente.FondosActivos ??= new HashSet<string>();
+
+            await _clienteRepo.CrearAsync(cliente);
+        }
+
+        public async Task<Cliente> ObtenerClientePorIdAsync(string clienteId)
+        {
+            var cliente = await _clienteRepo.ObtenerPorIdAsync(clienteId);
+            return cliente ?? throw new InvalidOperationException("Cliente no encontrado");
+        }
+
+        public async Task ActualizarClienteAsync(Cliente cliente)
+        {
+            var existente = await _clienteRepo.ObtenerPorIdAsync(cliente.ClienteID);
+            if (existente == null)
+                throw new InvalidOperationException("Cliente no existe");
+
+            await _clienteRepo.ActualizarAsync(cliente);
+        }
+
+        public async Task EliminarClienteAsync(string clienteId)
+        {
+            var existente = await _clienteRepo.ObtenerPorIdAsync(clienteId);
+            if (existente == null)
+                throw new InvalidOperationException("Cliente no existe");
+
+            await _clienteRepo.EliminarAsync(clienteId);
+        }
+    }
+}
+

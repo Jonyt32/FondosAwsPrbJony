@@ -1,0 +1,72 @@
+# === .NET Core / .NET 5+ / .NET 9 ===
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+.vscode/
+*.dbmdl
+*.log
+*.pdb
+*.cache
+*.ide
+*.DS_Store
+*.ncrunch*
+*.localhistory/
+*.orig
+*.rej
+TestResults/
+publish/
+*.zip
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+# Dotnet CLI
+.vs/
+.vscode/
+*.dotCover
+*.coverage
+*.coveragexml
+
+# === Angular ===
+node_modules/
+dist/
+tmp/
+out-tsc/
+coverage/
+.angular/
+.env
+.env.*.local
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# === Optional ===
+*.swp
+*.bak
+*.tmp
+*.temp
+*.old
+*.orig
+*.rej

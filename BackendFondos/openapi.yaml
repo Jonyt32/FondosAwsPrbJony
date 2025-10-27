@@ -1,0 +1,109 @@
+openapi: 3.0.0
+components:
+  schemas:
+    ActualizarSaldoRequestDto:
+      type: object
+      required:
+        - ClienteId
+        - NuevoSaldo
+      properties:
+        ClienteId:
+          type: string
+        NuevoSaldo:
+          type: number
+    ClienteDto:
+      type: object
+      required:
+        - Nombre
+      properties:
+        SaldoDisponible:
+          type: number
+        FondosActivos:
+          type: array
+          items:
+            type: string
+        PreferenciaNotificacion:
+          type: string
+          default: email
+        Nombre:
+          type: string
+    FondoDto:
+      type: object
+      required:
+        - NombreFondo
+        - MontoMinimo
+        - Categoria
+      properties:
+        NombreFondo:
+          type: string
+        MontoMinimo:
+          type: number
+        Categoria:
+          type: string
+    ResultadoOperacionDto:
+      type: object
+      required:
+        - Exito
+        - ClienteId
+        - FondoId
+        - Tipo
+      properties:
+        Exito:
+          type: boolean
+        MensajeNotificacion:
+          type: string
+        ClienteId:
+          type: string
+        FondoId:
+          type: string
+        Tipo:
+          type: string
+    TransaccionDto:
+      type: object
+      required:
+        - Tipo
+        - FondoID
+        - Monto
+        - Fecha
+      properties:
+        Tipo:
+          type: string
+        FondoID:
+          type: string
+        Monto:
+          type: number
+        Fecha:
+          type: string
+          format: date-time
+        Notificacion:
+          type: string
+          default: email
+    SuscripcionRequestDto:
+      type: object
+      required:
+        - ClienteId
+        - FondoId
+      properties:
+        ClienteId:
+          type: string
+        FondoId:
+          type: string
+    CancelacionRequestDto:
+      type: object
+      required:
+        - ClienteId
+        - FondoId
+      properties:
+        ClienteId:
+          type: string
+        FondoId:
+          type: string
+    EmptyResponse:
+      type: object
+      properties: {}
+  securitySchemes: {}
+info:
+  title: ''
+  description: ''
+  version: 0eef6b11-393b-4292-a009-150445407d71
+paths: {}
