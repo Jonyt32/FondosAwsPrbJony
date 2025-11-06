@@ -14,6 +14,15 @@ namespace BackendFondos.Domain.Services
             _fondoRepo = fondoRepo;
         }
 
+        public async Task<List<Fondo>> ObtenerTodosFondos() 
+        {
+            var lst = await _fondoRepo.ObtenerTodosAsync();
+            if(lst == null)
+                throw new InvalidOperationException("No existen fondos");
+
+            return lst.ToList();
+        }       
+
         public async Task CrearFondoAsync(Fondo fondo)
         {
             fondo.FondoID ??= Guid.NewGuid().ToString();
@@ -53,6 +62,15 @@ namespace BackendFondos.Domain.Services
                 throw new InvalidOperationException("Fondo no existe");
 
             await _fondoRepo.EliminarAsync(fondoId);
+        }
+
+        public async Task<List<Fondo>> ObtenerFondosPorIdsAsync(List<string> fondos) 
+        {
+            var fondosCliente = await _fondoRepo.ObtenerFondosPorIdsAsync(fondos);
+            if (fondosCliente == null)
+                throw new InvalidOperationException("Cliente no tiene fondos");
+
+            return fondosCliente.ToList();
         }
     }
 }

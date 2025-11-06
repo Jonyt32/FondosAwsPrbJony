@@ -151,13 +151,13 @@ namespace BackendFondos.Domain.Services
                 ? "Suscripción confirmada"
                 : "Cancelación confirmada";
 
-            if (cliente.PreferenciaNotificacion == "email" &&
-                cliente.CanalesNotificacion.TryGetValue("email", out var correo))
+            if (cliente.PreferenciaNotificacion == TipoNotificacion.Email.ToString() &&
+                cliente.CanalesNotificacion.TryGetValue(TipoNotificacion.Email.ToString(), out var correo))
             {
-                await _notificacionEmailService.EnviarCorreoAsync(correo, asunto, mensaje);
+                await _notificacionEmailService.EnviarCorreoAsync(correo, asunto, mensaje, tipo);
             }
-            else if (cliente.PreferenciaNotificacion == "sms" &&
-                     cliente.CanalesNotificacion.TryGetValue("sms", out var telefono))
+            else if (cliente.PreferenciaNotificacion == TipoNotificacion.Sms.ToString() &&
+                     cliente.CanalesNotificacion.TryGetValue(TipoNotificacion.Sms.ToString(), out var telefono))
             {
                 await _notificacionEmailService.EnviarSmsAsync(telefono, mensaje, tipo);
             }

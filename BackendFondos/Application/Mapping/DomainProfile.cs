@@ -12,12 +12,21 @@ namespace BackendFondos.Application.Mapping
             CreateMap<ClienteDto, Cliente>()
                 .ForMember(dest => dest.ClienteID, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()));
 
+            CreateMap<Cliente, ClienteDto>();
+
             CreateMap<FondoDto, Fondo>()
                 .ForMember(dest => dest.FondoID, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()));
+
+            CreateMap<Fondo, FondoDto>();
 
             CreateMap<TransaccionDto, Transaccion>()
                 .ForMember(dest => dest.TransaccionID, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Fecha, opt => opt.MapFrom(_ => DateTime.UtcNow.ToString("o")));
+            
+            CreateMap<Transaccion, TransaccionDto>();
+
+            CreateMap<UsuarioDto, Usuario>().ForMember(dest => dest.UsuarioID, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()));
+            CreateMap<Usuario, UsuarioDto>();
         }
     }
 }

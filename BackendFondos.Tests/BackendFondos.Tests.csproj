@@ -16,4 +16,8 @@
     <ProjectReference Include="..\BackendFondos\BackendFondos.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestResults\" />
+  </ItemGroup>
+
 </Project>

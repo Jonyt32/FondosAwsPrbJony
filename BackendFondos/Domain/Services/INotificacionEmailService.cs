@@ -4,7 +4,7 @@ namespace BackendFondos.Domain.Services
 {
     public interface INotificacionEmailService
     {
-        Task EnviarCorreoAsync(string destinatario, string asunto, string cuerpoHtml);
+        Task<ResultadoOperacionDto> EnviarCorreoAsync(string destinatario, string asunto, string cuerpoHtml, TipoTransaccion tipo);
         Task<ResultadoOperacionDto> EnviarSmsAsync(string numeroTelefono, string mensaje, TipoTransaccion tipo);
     }
 }

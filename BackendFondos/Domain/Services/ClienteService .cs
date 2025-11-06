@@ -16,23 +16,32 @@ namespace BackendFondos.Domain.Services
 
         public async Task CrearClienteAsync(Cliente cliente)
         {
-            // Generar un ID único si no viene definido
-            cliente.ClienteID ??= Guid.NewGuid().ToString();
+            try
+            {
+                // Generar un ID único si no viene definido
+                cliente.ClienteID ??= Guid.NewGuid().ToString();
 
-            if (string.IsNullOrWhiteSpace(cliente.ClienteID))
-                throw new InvalidOperationException("El ID del cliente es obligatorio");
+                if (string.IsNullOrWhiteSpace(cliente.ClienteID))
+                    throw new InvalidOperationException("El ID del cliente es obligatorio");
 
-            if (cliente.Saldo < 0)
-                throw new InvalidOperationException("El saldo no puede ser negativo");
+                if (cliente.Saldo < 0)
+                    throw new InvalidOperationException("El saldo no puede ser negativo");
 
-            var existente = await _clienteRepo.ObtenerPorIdAsync(cliente.ClienteID);
-            if (existente != null)
-                throw new InvalidOperationException("El cliente ya existe");
+                var existente = await _clienteRepo.ObtenerPorIdAsync(cliente.ClienteID);
+                if (existente != null)
+                    throw new InvalidOperationException("El cliente ya existe");
 
-            cliente.PreferenciaNotificacion ??= "email";
-            cliente.FondosActivos ??= new HashSet<string>();
+                cliente.PreferenciaNotificacion ??= "email";
+                cliente.FondosActivos ??= new HashSet<string>();
 
-            await _clienteRepo.CrearAsync(cliente);
+                await _clienteRepo.CrearAsync(cliente);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         public async Task<Cliente> ObtenerClientePorIdAsync(string clienteId)
@@ -48,6 +57,25 @@ namespace BackendFondos.Domain.Services
                 throw new InvalidOperationException("Cliente no existe");
 
             await _clienteRepo.ActualizarAsync(cliente);
+        }
+
+        public async Task ActualizarSaldoClienteAsync(string clienteId, decimal monto)
+        {
+            try
+            {
+                var existente = await _clienteRepo.ObtenerPorIdAsync(clienteId);
+
+                if (existente == null)
+                    throw new InvalidOperationException("Cliente no existe");
+
+                existente.Saldo = monto;
+                await _clienteRepo.ActualizarAsync(existente);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         public async Task EliminarClienteAsync(string clienteId)

@@ -15,23 +15,42 @@ namespace BackendFondos.Domain.Services
             _remitente = config["Ses:Remitente"];
         }
 
-        public async Task EnviarCorreoAsync(string destinatario, string asunto, string cuerpoHtml)
+        public async Task<ResultadoOperacionDto> EnviarCorreoAsync(string destinatario, string asunto, string cuerpoHtml, TipoTransaccion tipo)
         {
-            var request = new SendEmailRequest
+            try
             {
-                Source = _remitente,
-                Destination = new Destination { ToAddresses = new List<string> { destinatario } },
-                Message = new Message
+                var request = new SendEmailRequest
                 {
-                    Subject = new Content(asunto),
-                    Body = new Body
+                    Source = _remitente,
+                    Destination = new Destination { ToAddresses = new List<string> { destinatario } },
+                    Message = new Message
                     {
-                        Html = new Content { Charset = "UTF-8", Data = cuerpoHtml }
+                        Subject = new Content(asunto),
+                        Body = new Body
+                        {
+                            Html = new Content { Charset = "UTF-8", Data = cuerpoHtml }
+                        }
                     }
-                }
-            };
+                };
 
-            await _ses.SendEmailAsync(request);
+                await _ses.SendEmailAsync(request);
+                
+                return new ResultadoOperacionDto
+                {
+                    Exito = true,
+                    MensajeNotificacion = $"Email enviado a {destinatario}",
+                    Tipo = tipo
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultadoOperacionDto
+                {
+                    Exito = false,
+                    MensajeNotificacion = $"error enviando notifiacion a: {destinatario}",
+                    Tipo = tipo
+                };
+            }
         }
 
         public async Task<ResultadoOperacionDto> EnviarSmsAsync(string numeroTelefono, string mensaje, TipoTransaccion tipo)
