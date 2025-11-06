@@ -20,7 +20,7 @@ public class CrearClienteEndpoint : Endpoint<ClienteDto>
     {
         Post("/clientes");
         Roles("Admin");
-        AllowAnonymous();
+        //AllowAnonymous();
     }
 
     public override async Task HandleAsync(ClienteDto req, CancellationToken ct)

@@ -8,7 +8,7 @@ namespace BackendFondos.Domain.Entities
         [DynamoDBHashKey]
         public string UsuarioID { get; set; }
         [DynamoDBProperty]
-        public string UserName { get; set; }
+        public string NombreUsuario { get; set; }
 
         [DynamoDBProperty]
         public string Email { get; set; } = string.Empty;

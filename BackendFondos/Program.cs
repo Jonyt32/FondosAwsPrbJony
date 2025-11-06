@@ -1,5 +1,6 @@
-using Amazon.DynamoDBv2;
+ï»¿using Amazon.DynamoDBv2;
 using Amazon.SimpleEmail;
+using BackendFondos;
 using BackendFondos.Application.Mapping;
 using BackendFondos.Domain.Repositories;
 using BackendFondos.Domain.Services;
@@ -9,12 +10,9 @@ using BackendFondos.Infrastructure.Repositories;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using YamlDotNet.Core.Tokens;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,21 +21,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument();
 
-//builder.Services.AddAutoMapper(typeof(DomainProfile));
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<DomainProfile>();
-    // cfg.AddProfiles(typeof(OtherProfile).Assembly); // si necesitas más assemblies
 });
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IFondoRepository, FondoRepository>();
 builder.Services.AddScoped<ITransaccionRepository, TransaccionRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 builder.Services.AddScoped<IGestorSuscripcionesService, GestorSuscripcionesService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<ITransaccionService, TransaccionService>();
 builder.Services.AddScoped<IFondoService, FondoService>();
+builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
 builder.Services.AddScoped<SuscripcionValidator>();
 builder.Services.AddScoped<CancelacionValidator>();
 builder.Services.AddScoped<TransaccionValidator>();
@@ -52,7 +50,7 @@ builder.Services.AddSingleton<DynamoDbContext>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "dG9rZW49QWRtaW4xMjM=");
+var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "UHJ1ZWJhSkBueVQwcnIzc0FkbWluMTIz");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -67,38 +65,21 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "miIssuer",
-        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "miAudience",
+        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "fondos-api",
+        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "fondos-app",
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        RoleClaimType = "roles" 
+        RoleClaimType = ClaimTypes.Role 
     };
-    /*options.Events = new JwtBearerEvents
-    {
-        OnTokenValidated = ctx =>
-        {
-            // ejemplo para mover claim "roles" a ClaimTypes.Role si es necesario
-            var claimsIdentity = ctx.Principal?.Identity as ClaimsIdentity;
-            var rolesClaim = claimsIdentity?.FindFirst("roles");
-            if (rolesClaim != null && rolesClaim.Value.StartsWith("["))
-            {
-                // opcional: parsear JSON array si viene como string
-            }
-            return Task.CompletedTask;
-        }
-    };*/
+    
 });
 
-// autorización
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
 });
 
-
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -127,14 +108,14 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-
-
+using var scope = app.Services.CreateScope();
+var usuarioService = scope.ServiceProvider.GetRequiredService<IUsuarioServices>();
+await InitialConfiguration.GenerarUsuarioAdmin(usuarioService);
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 app.UseFastEndpoints();
+
 app.UseSwaggerGen();
 
 

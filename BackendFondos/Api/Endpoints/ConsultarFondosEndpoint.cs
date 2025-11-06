@@ -20,7 +20,7 @@ public class ConsultarFondosEndpoint : EndpointWithoutRequest<List<FondoDto>>
     {
         Get("/fondos");
         Roles("Admin");
-        AllowAnonymous();
+        //AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

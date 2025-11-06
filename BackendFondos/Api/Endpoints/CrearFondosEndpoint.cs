@@ -14,7 +14,7 @@ public class CrearFondosEndpoint : Endpoint<FondoDto>
     {
         Post("/fondo-nuevo");
         Roles("Admin");
-        AllowAnonymous();
+        //AllowAnonymous();
     }
 
     public CrearFondosEndpoint(AutoMapper.IMapper mapper)

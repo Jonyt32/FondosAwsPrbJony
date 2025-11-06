@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2.Model;
 using BackendFondos.Domain.Services;
 using FastEndpoints;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -32,17 +33,17 @@ namespace BackendFondos.Api.Endpoints
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuario.UsuarioID),
-                new Claim(ClaimTypes.Name, usuario.Email)
+                new Claim(ClaimTypes.Name, usuario.Email),
+                new Claim(ClaimTypes.Role, usuario.Rol)
             };
-            claims.Add(new Claim(ClaimTypes.Role, usuario.Rol));
 
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
             var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpiresMinutes"] ?? "3"));
+            var expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpiresMinutes"] ?? "60"));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(claims),
+                Subject = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme),
                 Expires = expires,
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Audience"],
@@ -52,8 +53,11 @@ namespace BackendFondos.Api.Endpoints
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwt = tokenHandler.WriteToken(token);
-
-            await Send.OkAsync(new AuthResponse { Token = jwt, Expires = expires });
+            var roles = new string[]
+            {
+                usuario.Rol
+            };
+            await Send.OkAsync(new AuthResponse { Token = jwt, Expires = expires, Roles = roles });
         }
 
     }

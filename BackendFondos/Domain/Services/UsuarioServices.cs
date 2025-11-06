@@ -37,6 +37,19 @@ namespace BackendFondos.Domain.Services
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<Usuario?> ObtenerUsuarioPorEmail(string email)
+        {
+            try
+            {
+                return await _usuariosRepository.ObtenerUsuarioPorEmail(email);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task CrearAsync(Usuario usuario) 
         {
             try
@@ -44,7 +57,7 @@ namespace BackendFondos.Domain.Services
                 var newUsuario = await _usuariosRepository.CrearAsync(usuario);
                 string body = $"Bienvenido a nuestro portal de fondos {usuario.Email} " +
                     "ya puedes logearte y hacer uso de nuestros servicios";
-                await _notificacionEmailService.EnviarCorreoAsync(newUsuario.Email, "Creación Usuario Fondos Bank", body);
+                await _notificacionEmailService.EnviarCorreoAsync(newUsuario.Email, "Creación Usuario Fondos Bank", body, TipoTransaccion.CreacionUsuario);
                 
             }
             catch (Exception ex)

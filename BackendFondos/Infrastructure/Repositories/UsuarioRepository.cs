@@ -1,8 +1,12 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
+using Amazon.DynamoDBv2.Model;
 using BackendFondos.Domain.Entities;
 using BackendFondos.Domain.Repositories;
 using BackendFondos.Infrastructure.Dynamo;
 using BCrypt.Net;
+using FastEndpoints;
 
 
 namespace BackendFondos.Infrastructure.Repositories
@@ -25,27 +29,54 @@ namespace BackendFondos.Infrastructure.Repositories
         {
             try
             {
-                var cfg = new DynamoDBOperationConfig { IndexName = EmailGsiName };
-                var q = _context.QueryAsync<Usuario>(email, cfg);
-                var list = await q.GetNextSetAsync().ConfigureAwait(false);
-                var user = list.FirstOrDefault();
-                if (user == null) return null;
+                var usuario = await ObtenerUsuarioPorEmail(email);
+                var isValid = BCrypt.Net.BCrypt.Verify(password, usuario.PasswordHash);
+                return isValid ? usuario : null;
 
-                if (BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-                    return user;
-
-                return null;
             }
-            catch (Amazon.DynamoDBv2.AmazonDynamoDBException)
+            catch (Exception ex)
             {
-                var all = await _context.ScanAsync<Usuario>(new List<ScanCondition>()).GetRemainingAsync().ConfigureAwait(false);
-                var user = all.FirstOrDefault(u => string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase));
-                if (user == null) return null;
-                if (BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-                    return user;
-                return null;
+                throw new Exception(ex.Message);
             }
 
+        }
+        public async Task<Usuario> ObtenerUsuarioPorEmail(string email) 
+        {
+            try
+            {
+                var request = new QueryRequest
+                {
+                    TableName = "Usuarios",
+                    IndexName = "GSI_Email",
+                    KeyConditionExpression = "Email = :v_email",
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        { ":v_email", new AttributeValue { S = email } }
+                    }
+                };
+
+                var client = new AmazonDynamoDBClient();
+                var response = await client.QueryAsync(request);
+
+                var item = response.Items.FirstOrDefault();
+                if (item == null) return null;
+
+                var usuario = new Usuario
+                {
+                    UsuarioID = item["UsuarioID"].S,
+                    Email = item["Email"].S,
+                    PasswordHash = item["Password"].S,
+                    NombreUsuario = item["NombreUsuario"].S,
+                    Rol = item["Rol"].S
+                };
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<Usuario> CrearAsync(Usuario usuario)
@@ -54,7 +85,7 @@ namespace BackendFondos.Infrastructure.Repositories
             {
                 UsuarioID = Guid.NewGuid().ToString(),
                 Email = usuario.Email,
-                UserName = usuario.UserName,
+                NombreUsuario = usuario.NombreUsuario,
                 Rol = usuario.Rol ?? "User",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(usuario.PasswordHash, workFactor: 12) 
             };

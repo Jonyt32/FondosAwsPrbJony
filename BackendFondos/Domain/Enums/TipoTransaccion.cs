@@ -1,7 +1,8 @@
 public enum TipoTransaccion
 {
     Suscripcion,
-    Cancelacion
+    Cancelacion,
+    CreacionUsuario
 }
 
 public enum TipoNotificacion 

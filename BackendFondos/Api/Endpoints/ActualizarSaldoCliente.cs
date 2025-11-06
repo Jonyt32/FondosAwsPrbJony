@@ -18,7 +18,7 @@ public class ActualizarSaldoClienteEndpoint : EndpointWithoutRequest
     {
         Post("/actualizar-saldo-cliente/{id}/{saldo}");
         Roles("Admin");
-        AllowAnonymous();
+        //AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

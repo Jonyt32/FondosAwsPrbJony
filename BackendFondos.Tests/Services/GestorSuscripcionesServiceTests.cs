@@ -103,7 +103,7 @@ namespace BackendFondos.Tests.Services
 
             Assert.True(resultado.Exito);
             Assert.Contains("Suscripción exitosa", resultado.MensajeNotificacion);
-            notificacionMock.Verify(n => n.EnviarCorreoAsync("jhony@email.com", It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            notificacionMock.Verify(n => n.EnviarCorreoAsync("jhony@email.com", It.IsAny<string>(), It.IsAny<string>(), TipoTransaccion.Suscripcion),  Times.Once);
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace BackendFondos.Tests.Services
 
             Assert.True(resultado.Exito);
             Assert.Contains("Cancelación exitosa", resultado.MensajeNotificacion);
-            notificacionMock.Verify(n => n.EnviarCorreoAsync("jhony@email.com", It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            notificacionMock.Verify(n => n.EnviarCorreoAsync("jhony@email.com", It.IsAny<string>(), It.IsAny<string>(), TipoTransaccion.Cancelacion), Times.Once);
         }
     }
 }
