@@ -108,9 +108,15 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-using var scope = app.Services.CreateScope();
-var usuarioService = scope.ServiceProvider.GetRequiredService<IUsuarioServices>();
-await InitialConfiguration.GenerarUsuarioAdmin(usuarioService);
+if (app.Environment.IsDevelopment() || builder.Configuration["App:ResetOnStartup"] == "true")
+{
+    using var scope = app.Services.CreateScope();
+    var usuarioService = scope.ServiceProvider.GetRequiredService<IUsuarioServices>();
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    var fondoService = scope.ServiceProvider.GetRequiredService<IFondoService>();
+    await InitialConfiguration.ResetDataAsync(usuarioService, fondoService, builder.Configuration);
+}
+
 
 app.UseAuthentication();
 app.UseAuthorization();

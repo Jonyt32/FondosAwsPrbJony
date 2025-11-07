@@ -12,6 +12,14 @@ namespace BackendFondos.Domain.Services
             _usuariosRepository = usuariosRepository;
             _notificacionEmailService = notificacionEmailService;
         }
+        public async Task<List<Usuario>> ObtenerTodosUsuarios() 
+        {
+            var lst = await _usuariosRepository.ObtenerTodosAsync();
+            if (lst == null)
+                throw new InvalidOperationException("No existen fondos");
+
+            return lst.ToList();
+        }
         public async Task<Usuario> ObtenerPorIdAsync(string userId) 
         {
             try
@@ -49,7 +57,6 @@ namespace BackendFondos.Domain.Services
                 throw new Exception(ex.Message);
             }
         }
-
         public async Task CrearAsync(Usuario usuario) 
         {
             try

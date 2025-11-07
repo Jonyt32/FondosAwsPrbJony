@@ -20,6 +20,12 @@ namespace BackendFondos.Infrastructure.Repositories
             _context = db.Context;
         }
 
+        public async Task<IEnumerable<Usuario>> ObtenerTodosAsync()
+        {
+            var scan = _context.ScanAsync<Usuario>(new List<ScanCondition>());
+            return await scan.GetRemainingAsync();
+        }
+
         public async Task<Usuario> ObtenerPorIdAsync(string userId)
         {
             return await _context.LoadAsync<Usuario>(userId);

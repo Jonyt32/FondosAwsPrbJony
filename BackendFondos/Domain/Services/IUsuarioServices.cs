@@ -4,6 +4,7 @@ namespace BackendFondos.Domain.Services
 {
     public interface IUsuarioServices
     {
+        Task<List<Usuario>> ObtenerTodosUsuarios();
         Task<Usuario> ObtenerPorIdAsync(string userId);
         Task<Usuario?> ObtenerUsuarioPorEmail(string email);
         Task<Usuario?> LoginAsync(string email, string password);

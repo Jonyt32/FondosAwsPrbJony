@@ -27,9 +27,6 @@ namespace BackendFondos.Domain.Services
         {
             fondo.FondoID ??= Guid.NewGuid().ToString();
 
-            if (string.IsNullOrWhiteSpace(fondo.FondoID))
-                throw new InvalidOperationException("El ID del fondo es obligatorio");
-
             if (fondo.MontoMinimo <= 0)
                 throw new InvalidOperationException("El monto mínimo debe ser mayor a cero");
 

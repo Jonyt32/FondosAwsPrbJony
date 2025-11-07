@@ -1,15 +1,13 @@
-# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet publish -c Release -r linux-x64 --self-contained false -o /app/publish
+RUN dotnet publish -c Release -o /app/publish
 
-# Lambda-compatible image
-FROM public.ecr.aws/lambda/provided:al2
-WORKDIR /var/task
-
-# Copiar archivos publicados
+FROM base AS final
+WORKDIR /app
 COPY --from=build /app/publish .
-
-# Entrypoint para Lambda
-CMD ["dotnet", "BackendFondos.dll"]
+ENTRYPOINT ["dotnet", "BackendFondos.dll"]
