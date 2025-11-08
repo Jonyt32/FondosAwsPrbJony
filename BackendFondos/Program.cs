@@ -67,10 +67,11 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "fondos-api",
         ValidAudience = builder.Configuration["Jwt:Audience"] ?? "fondos-app",
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        RoleClaimType = ClaimTypes.Role 
+        IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "UHJ1ZWJhSkBueVQwcnIzc0FkbWluMTIz")),
+        RoleClaimType = ClaimTypes.Role
     };
-    
+
 });
 
 builder.Services.AddAuthorization(options =>
@@ -89,25 +90,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 if (app.Environment.IsDevelopment() || builder.Configuration["App:ResetOnStartup"] == "true")
 {
     using var scope = app.Services.CreateScope();
@@ -121,13 +103,7 @@ if (app.Environment.IsDevelopment() || builder.Configuration["App:ResetOnStartup
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();
-
 app.UseSwaggerGen();
 
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

@@ -13,7 +13,7 @@ namespace BackendFondos.Api.Endpoints
     {
         private readonly IUsuarioServices _usuarioServices;
         private readonly IConfiguration _configuration;
-        public LoginEndpoint(IUsuarioServices usuarioServices, IConfiguration configuration) 
+        public LoginEndpoint(IUsuarioServices usuarioServices, IConfiguration configuration)
         {
             _usuarioServices = usuarioServices;
             _configuration = configuration;
@@ -59,7 +59,6 @@ namespace BackendFondos.Api.Endpoints
             };
             await Send.OkAsync(new AuthResponse { Token = jwt, Expires = expires, Roles = roles });
         }
-
     }
 }
 

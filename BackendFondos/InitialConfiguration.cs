@@ -36,7 +36,10 @@ namespace BackendFondos
                 SecretId = secretId
             });
 
-            return JsonSerializer.Deserialize<AdminCreds>(response.SecretString)!;
+            if (string.IsNullOrWhiteSpace(response.SecretString)) throw new InvalidOperationException("No pudo recuperar secrets:Admin de aws");
+
+            return JsonSerializer.Deserialize<AdminCreds>(response.SecretString!,
+                new JsonSerializerOptions{PropertyNameCaseInsensitive = true    })!;
         }
 
         private static async Task CrearFondosPorDefecto(IFondoService fondoService)
