@@ -8,18 +8,19 @@ public class ConsultarTransaccionesEndpoint : EndpointWithoutRequest<List<Transa
 {
     private readonly AutoMapper.IMapper _mapper;
     private readonly ITransaccionService _transService;
+    private readonly ILogger<ConsultarTransaccionesEndpoint> _logger;
 
-    public ConsultarTransaccionesEndpoint(AutoMapper.IMapper mapper, ITransaccionService transService)
+    public ConsultarTransaccionesEndpoint(AutoMapper.IMapper mapper, ITransaccionService transService, ILogger<ConsultarTransaccionesEndpoint> logger)
     {
         _mapper = mapper;
         _transService = transService;
+        _logger = logger;
     }
 
     public override void Configure()
     {
         Get("/transacciones/{id}");
         Roles("User");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -32,8 +33,9 @@ public class ConsultarTransaccionesEndpoint : EndpointWithoutRequest<List<Transa
             var resp = _mapper.Map<List<TransaccionDto>>(items);
             await Send.OkAsync(resp);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error al consultar transacciones");
             await Send.ErrorsAsync();
         }
     }

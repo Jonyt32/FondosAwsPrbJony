@@ -8,14 +8,19 @@ using System.Net;
 public class CancelarSuscripcionEndpoint : Endpoint<CancelacionRequestDto>
 {
     private readonly IGestorSuscripcionesService _service;
+    private readonly ILogger<CancelarSuscripcionEndpoint> _logger;
 
-    public CancelarSuscripcionEndpoint(IGestorSuscripcionesService service) => _service = service;
+    public CancelarSuscripcionEndpoint(IGestorSuscripcionesService service, ILogger<CancelarSuscripcionEndpoint> logger) 
+    {
+        _service = service;
+        _logger = logger;
+        
+    }
 
     public override void Configure()
     {
         Post("/clientes/cancelar-suscripcion");
         Roles("User");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancelacionRequestDto req, CancellationToken ct)
@@ -29,8 +34,9 @@ public class CancelarSuscripcionEndpoint : Endpoint<CancelacionRequestDto>
             else
                 await Send.OkAsync(success);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error al cancelar suscripcion");
             await Send.ErrorsAsync();
         }
     }

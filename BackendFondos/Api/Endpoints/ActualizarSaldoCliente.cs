@@ -8,10 +8,12 @@ using System.Net;
 public class ActualizarSaldoClienteEndpoint : EndpointWithoutRequest
 {
     private readonly IClienteService _clienteService;
+    private readonly ILogger<ActualizarSaldoClienteEndpoint> _logger;
 
-    public ActualizarSaldoClienteEndpoint(IClienteService clienteService)
+    public ActualizarSaldoClienteEndpoint(IClienteService clienteService, ILogger<ActualizarSaldoClienteEndpoint> logger    )
     {
         _clienteService = clienteService;
+        _logger = logger;
     }
 
     public override void Configure()
@@ -32,8 +34,9 @@ public class ActualizarSaldoClienteEndpoint : EndpointWithoutRequest
             
             await Send.OkAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error al actualizar saldo cliente");
             await Send.ErrorsAsync();
         }
     }

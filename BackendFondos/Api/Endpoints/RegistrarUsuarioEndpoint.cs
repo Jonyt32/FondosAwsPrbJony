@@ -9,17 +9,18 @@ namespace BackendFondos.Api.Endpoints
     {
         private readonly AutoMapper.IMapper _mapper;
         private readonly IUsuarioServices _usuarioServices;
+        private readonly ILogger<RegistrarUsuarioEndpoint> _logger;
 
-        public RegistrarUsuarioEndpoint(AutoMapper.IMapper mapper, IUsuarioServices usuarioServices)
+        public RegistrarUsuarioEndpoint(AutoMapper.IMapper mapper, IUsuarioServices usuarioServices, ILogger<RegistrarUsuarioEndpoint> logger)
         {
             _mapper = mapper;
             _usuarioServices = usuarioServices;
+            _logger = logger;
         }
         public override void Configure()
         {
             Post("/Usuarios/register");
             Roles("Admin");
-            AllowAnonymous();
         }
 
         public override async Task HandleAsync(UsuarioDto req, CancellationToken ct)
@@ -30,8 +31,9 @@ namespace BackendFondos.Api.Endpoints
                 await _usuarioServices.CrearAsync(usuario);
                 await Send.OkAsync(new { message = "Cliente creado exitosamente" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error al registrar usuarios");
                 await Send.ErrorsAsync();
             }
         }

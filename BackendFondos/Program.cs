@@ -102,6 +102,22 @@ if (app.Environment.IsDevelopment() || builder.Configuration["App:ResetOnStartup
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Excepción no manejada en la solicitud");
+        throw;
+    }
+});
+
+
 app.UseFastEndpoints();
 app.UseSwaggerGen();
 

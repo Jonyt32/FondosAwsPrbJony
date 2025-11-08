@@ -9,17 +9,18 @@ using Microsoft.AspNetCore.Authorization;
 public class CrearFondosEndpoint : Endpoint<FondoDto>
 {
     private readonly AutoMapper.IMapper _mapper;
+    private readonly ILogger<CrearFondosEndpoint> _logger;
 
     public override void Configure()
     {
         Post("/fondo-nuevo");
         Roles("Admin");
-        //AllowAnonymous();
     }
 
-    public CrearFondosEndpoint(AutoMapper.IMapper mapper)
+    public CrearFondosEndpoint(AutoMapper.IMapper mapper, ILogger<CrearFondosEndpoint> logger)
     {
         _mapper = mapper;
+        _logger = logger;
     }
 
     public override async Task HandleAsync(FondoDto req, CancellationToken ct)
@@ -34,6 +35,7 @@ public class CrearFondosEndpoint : Endpoint<FondoDto>
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error al crear fondo");
             await Send.ErrorsAsync();
         }
     }

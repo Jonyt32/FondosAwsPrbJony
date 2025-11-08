@@ -25,8 +25,11 @@ namespace BackendFondos.Application.Mapping
             
             CreateMap<Transaccion, TransaccionDto>();
 
-            CreateMap<UsuarioDto, Usuario>().ForMember(dest => dest.UsuarioID, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()));
-            CreateMap<Usuario, UsuarioDto>();
+            CreateMap<UsuarioDto, Usuario>()
+                .ForMember(dest => dest.UsuarioID, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(_ => _.Password));
+            CreateMap<Usuario, UsuarioDto>()
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(_ => _.PasswordHash));
         }
     }
 }

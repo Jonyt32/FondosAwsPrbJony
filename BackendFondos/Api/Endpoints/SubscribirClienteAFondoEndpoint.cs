@@ -7,8 +7,13 @@ using System.Net;
 public class SubscribirClienteAFondoEndpoint : EndpointWithoutRequest<ResultadoOperacionDto>
 {
     private readonly IGestorSuscripcionesService _suscripcionService;
+    private readonly ILogger<SubscribirClienteAFondoEndpoint> _logger;
 
-    public SubscribirClienteAFondoEndpoint(IGestorSuscripcionesService suscripcionService) => _suscripcionService = suscripcionService;
+    public SubscribirClienteAFondoEndpoint(IGestorSuscripcionesService suscripcionService, ILogger<SubscribirClienteAFondoEndpoint> logger) 
+    {
+        _suscripcionService = suscripcionService;
+        _logger = logger;
+    } 
 
     public override void Configure()
     {
@@ -41,6 +46,7 @@ public class SubscribirClienteAFondoEndpoint : EndpointWithoutRequest<ResultadoO
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, $"Error al suscribir fondo {fondoId} al cliente {clienteId}");
             await Send.ErrorsAsync();
         }
     }

@@ -9,20 +9,22 @@ public class FondosAsignadosClienteEndpoint : EndpointWithoutRequest<List<FondoD
     private readonly AutoMapper.IMapper _mapper;
     private readonly IClienteService _clienteService;
     private readonly IFondoService _fondoService;
+    private readonly ILogger<FondosAsignadosClienteEndpoint> _logger;
 
 
-    public FondosAsignadosClienteEndpoint(AutoMapper.IMapper mapper, IClienteService clienteService, IFondoService fondoService )
+    public FondosAsignadosClienteEndpoint(AutoMapper.IMapper mapper, IClienteService clienteService, IFondoService fondoService
+        , ILogger<FondosAsignadosClienteEndpoint> logger)
     {
         _mapper = mapper;
         _clienteService = clienteService;
         _fondoService = fondoService;
+        _logger = logger;
     }
 
     public override void Configure()
     {
         Get("/clientes/{id}/fondos");
         Roles("User");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -35,8 +37,9 @@ public class FondosAsignadosClienteEndpoint : EndpointWithoutRequest<List<FondoD
             var resp = _mapper.Map<List<FondoDto>>(fondosCliente);
             await Send.OkAsync(resp);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error al obtener fondos por cliente");
             await Send.ErrorsAsync();
         }
     }
