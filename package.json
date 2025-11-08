@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.25.0",
     "serverless-dotnet": "^1.6.1",
     "serverless-openapi-documentation": "^0.4.0",
     "serverless-scriptable-plugin": "^1.3.1"
