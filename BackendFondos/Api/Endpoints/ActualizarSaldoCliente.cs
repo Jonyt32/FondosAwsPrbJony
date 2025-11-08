@@ -18,7 +18,7 @@ public class ActualizarSaldoClienteEndpoint : EndpointWithoutRequest
 
     public override void Configure()
     {
-        Post("/actualizar-saldo-cliente/{id}/{saldo}");
+        Post("/clientes/actualizar-saldo-cliente/{id}/{saldo}");
         Roles("Admin");
         //AllowAnonymous();
     }

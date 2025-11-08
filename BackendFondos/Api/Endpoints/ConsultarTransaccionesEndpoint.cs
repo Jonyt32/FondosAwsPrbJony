@@ -19,7 +19,7 @@ public class ConsultarTransaccionesEndpoint : EndpointWithoutRequest<List<Transa
 
     public override void Configure()
     {
-        Get("/transacciones/{id}");
+        Get("/clientes/transacciones/{id}");
         Roles("User");
     }
 

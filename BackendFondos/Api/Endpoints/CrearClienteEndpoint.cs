@@ -20,7 +20,7 @@ public class CrearClienteEndpoint : Endpoint<ClienteDto>
 
     public override void Configure()
     {
-        Post("/clientes");
+        Post("/clientes/crear-cliente");
         Roles("Admin");
         //AllowAnonymous();
     }

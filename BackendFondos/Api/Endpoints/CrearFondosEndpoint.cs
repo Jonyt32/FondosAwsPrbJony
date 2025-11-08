@@ -13,7 +13,7 @@ public class CrearFondosEndpoint : Endpoint<FondoDto>
 
     public override void Configure()
     {
-        Post("/fondo-nuevo");
+        Post("/fondos/crear-fondo");
         Roles("Admin");
     }
 
