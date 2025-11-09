@@ -1,0 +1,25 @@
+<form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
+  <label>Nombre</label>
+  <input formControlName="nombre" type="text" />
+  <div *ngIf="clienteForm.get('nombre')?.invalid && clienteForm.get('nombre')?.touched">
+    El nombre es obligatorio.
+  </div>
+
+  <label>Email</label>
+  <input formControlName="email" type="email" />
+  <div *ngIf="clienteForm.get('email')?.invalid && clienteForm.get('email')?.touched">
+    Email inválido.
+  </div>
+
+  <label>Preferencia de Notificación</label>
+  <select formControlName="preferenciaNotificacion">
+    <option value="">Seleccione</option>
+    <option value="Email">Email</option>
+    <option value="SMS">SMS</option>
+  </select>
+
+  <label>Saldo Disponible</label>
+  <input formControlName="saldoDisponible" type="number" min="0" />
+
+  <button type="submit" [disabled]="clienteForm.invalid">Crear Cliente</button>
+</form>

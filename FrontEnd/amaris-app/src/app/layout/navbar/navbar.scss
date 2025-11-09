@@ -1,0 +1,16 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #1e1e2f;
+  color: white;
+
+  .logo {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .user-info {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,26 @@
+<h3>Historial de Transacciones</h3>
+
+<table *ngIf="transacciones.length > 0">
+  <thead>
+    <tr>
+      <th>Tipo</th>
+      <th>Fondo</th>
+      <th>Monto</th>
+      <th>Fecha</th>
+      <th>Notificación</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let tx of transacciones">
+      <td>{{ tx.tipo }}</td>
+      <td>{{ tx.fondoID }}</td>
+      <td>{{ tx.monto | currency:'COP' }}</td>
+      <td>{{ tx.fecha | date:'short' }}</td>
+      <td>{{ tx.notificacion }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="transacciones.length === 0">
+  No hay transacciones registradas.
+</div>

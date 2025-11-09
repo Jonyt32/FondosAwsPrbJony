@@ -1,0 +1,20 @@
+<h2>Fondos disponibles</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Categoría</th>
+      <th>Monto Mínimo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let fondo of fondos">
+      <td>{{ fondo.fondoID }}</td>
+      <td>{{ fondo.nombreFondo }}</td>
+      <td>{{ fondo.categoria }}</td>
+      <td>{{ fondo.montoMinimo | currency:'COP' }}</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,33 @@
+<h2>Fondos disponibles</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Categoría</th>
+      <th>Monto Mínimo</th>
+      <th>Suscripción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let fondo of fondos">
+      <td>{{ fondo.nombreFondo }}</td>
+      <td>{{ fondo.categoria }}</td>
+      <td>{{ fondo.montoMinimo | currency:'COP' }}</td>
+      <td>
+        <button (click)="toggleSuscripcion(fondo.fondoID!)">
+          {{ estaSuscrito(fondo.fondoID!) ? 'Quitar suscripción' : 'Suscribirse' }}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+  <button (click)="mostrarHistorial = !mostrarHistorial">
+  {{ mostrarHistorial ? 'Ocultar Historial' : 'Ver Historial' }}
+</button>
+
+<app-historial-transacciones
+  *ngIf="mostrarHistorial"
+  [clienteId]="cliente.clienteID || ''">
+</app-historial-transacciones>
+
+</table>

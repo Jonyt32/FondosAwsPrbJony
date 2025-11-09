@@ -6,10 +6,12 @@ export interface Fondo {
 }
 
 export interface Cliente { 
+    clienteID?:  string;
     saldoDisponible?: number;
     fondosActivos?: Array<string>;
     preferenciaNotificacion?: string;
     nombre?: string;
+    email?:string;
 }
 
 export interface Transaccion { 

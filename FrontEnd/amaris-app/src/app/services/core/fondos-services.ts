@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import * as rxjs from 'rxjs';
 import { FondosService } from '../fondos-api/api/fondos.service';
 import { BackendFondosApplicationDTOsFondoDto } from '../fondos-api/model/backendFondosApplicationDTOsFondoDto';
+import { Fondo } from '../../model/models';
+import { catchError, Observable, throwError } from 'rxjs';
 
   
 @Injectable({
@@ -9,47 +11,35 @@ import { BackendFondosApplicationDTOsFondoDto } from '../fondos-api/model/backen
 })
 export class FondosServices {
 
-  constructor(private fondosServices: FondosService ) {}
+  constructor(private fondosServices: FondosService) {}
 
-  
-
-  CrearFondo(fondo:any){
-    if(!fondo){
-      throw new Error('El fondo no puede ser nulo o indefinido');
+  crearFondo(fondo: Fondo): Observable<void> {
+    if (!fondo) {
+      return throwError(() => new Error('El fondo no puede ser nulo o indefinido'));
     }
-    let fondoDto: BackendFondosApplicationDTOsFondoDto;
-    fondoDto  = {
+
+    const fondoDto: BackendFondosApplicationDTOsFondoDto = {
       fondoID: fondo.fondoID,
       nombreFondo: fondo.nombreFondo,
       montoMinimo: fondo.montoMinimo,
       categoria: fondo.categoria
-    }
+    };
 
-    try {
-      this.fondosServices.crearFondosEndpoint(fondoDto).subscribe({
-        next: (response) => {
-          return response;
-        }
-      });
-    } catch (error) {
-      throw new Error('Error en CrearFondo'+ error);
-    }
-
+    return this.fondosServices.crearFondosEndpoint(fondoDto).pipe(
+      catchError((error) => {
+        console.error('Error en crearFondo:', error);
+        return throwError(() => new Error('Error al crear el fondo.'));
+      })
+    );
   }
 
-  ObtenerFondos() {
-    try {
-       this.fondosServices.consultarFondosEndpoint().subscribe({
-        next: (fondos) => {
-          return fondos;
-        }
-       });
-    } catch (error) {
-      throw  new Error('Error al actualizar el saldo del cliente: ' + error);
-    }
+  obtenerFondos(): Observable<BackendFondosApplicationDTOsFondoDto[]> {
+    return this.fondosServices.consultarFondosEndpoint().pipe(
+      catchError((error) => {
+        console.error('Error en obtenerFondos:', error);
+        return throwError(() => new Error('Error al consultar los fondos.'));
+      })
+    );
   }
-
-
-
 
 }

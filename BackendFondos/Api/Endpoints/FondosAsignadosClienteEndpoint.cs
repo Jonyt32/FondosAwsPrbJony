@@ -24,7 +24,7 @@ public class FondosAsignadosClienteEndpoint : EndpointWithoutRequest<List<FondoD
     public override void Configure()
     {
         Get("/clientes/{id}/fondos");
-        Roles("User");
+        Roles("Admin, User");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

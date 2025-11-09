@@ -1,33 +1,33 @@
 import { Injectable } from '@angular/core';
 import { BackendFondosApplicationDTOsUsuarioDto, UsuariosService } from '../fondos-api';
+import { Usuario } from '../../model/models';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsuariosServices {
 
-  constructor(private usuarioService: UsuariosService){
-    
-  }
+  constructor(private usuarioService: UsuariosService) {}
 
-  RegistrarUsuarios(usuario: any ) {
-
-    let usuarioDto: BackendFondosApplicationDTOsUsuarioDto;
-    if(!usuario)
-      throw new Error('El objeto usuario es nulo o indefinido.');
-
-    try {
-      usuarioDto = { 
-        nombreUsuario: usuario.nombreUsuario,
-        email: usuario.email,
-        rol: usuario.rol,
-        password: usuario.password
-      }  
-
-      return this.usuarioService.backendFondosApiEndpointsRegistrarUsuarioEndpoint(usuarioDto);
-
-    } catch (error) {
-      throw new Error('Error al mapear los datos del usuario: ' + error);
+  registrarUsuario(usuario: Usuario): Observable<void> {
+    if (!usuario) {
+      return throwError(() => new Error('El objeto usuario es nulo o indefinido.'));
     }
+
+    const usuarioDto: BackendFondosApplicationDTOsUsuarioDto = {
+      nombreUsuario: usuario.nombreUsuario,
+      email: usuario.email,
+      rol: usuario.rol,
+      password: usuario.password
+    };
+
+    return this.usuarioService.backendFondosApiEndpointsRegistrarUsuarioEndpoint(usuarioDto).pipe(
+      catchError((error) => {
+        console.error('Error en registrarUsuario:', error);
+        return throwError(() => new Error('Error al registrar el usuario.'));
+      })
+    );
   }
+
 }

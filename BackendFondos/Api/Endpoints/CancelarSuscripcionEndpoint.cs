@@ -20,7 +20,7 @@ public class CancelarSuscripcionEndpoint : Endpoint<CancelacionRequestDto>
     public override void Configure()
     {
         Post("/clientes/cancelar-suscripcion");
-        Roles("User");
+        Roles("Admin, User");
     }
 
     public override async Task HandleAsync(CancelacionRequestDto req, CancellationToken ct)

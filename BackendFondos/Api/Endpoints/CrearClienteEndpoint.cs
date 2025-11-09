@@ -21,8 +21,7 @@ public class CrearClienteEndpoint : Endpoint<ClienteDto>
     public override void Configure()
     {
         Post("/clientes/crear-cliente");
-        Roles("Admin");
-        //AllowAnonymous();
+        Roles("Admin, User");
     }
 
     public override async Task HandleAsync(ClienteDto req, CancellationToken ct)

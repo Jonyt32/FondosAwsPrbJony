@@ -6,16 +6,19 @@ import { App } from './app';
 import { AuthModule } from './auth/auth-module';
 import { SharedModule } from './shared/shared-module';
 import { LayoutModule } from './layout/layout-module';
-import { ClientesModule } from './features/clientes/clientes-module';
 import { FondosModule } from './features/fondos/fondos-module';
 import { UsuariosModule } from './features/usuarios/usuarios-module';
 import { TransaccionesModule } from './features/transacciones/transacciones-module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './services/core/auth-interceptor';
+import { HistorialTransacciones } from './features/clientes/historial-transacciones/historial-transacciones';
+import { ClientesModule } from './features/clientes/clientes-module';
+
 
 @NgModule({
   declarations: [
     App
+
   ],
   imports: [
     BrowserModule,

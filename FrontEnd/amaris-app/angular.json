@@ -65,6 +65,16 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "ssr": {
+              "outputPath": "dist/amaris-app/browser",
+              "index": "src/index.html",
+              "optimization": true,
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "buildOptimizer": true
             }
           },
           "defaultConfiguration": "production"

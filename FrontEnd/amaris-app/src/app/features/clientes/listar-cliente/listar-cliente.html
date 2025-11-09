@@ -1,0 +1,21 @@
+<h2>Clientes</h2>
+<button (click)="toggleFormulario()">
+  {{ mostrarFormulario ? 'Cancelar' : 'Agregar Cliente' }}
+</button>
+
+<app-crear-cliente *ngIf="mostrarFormulario" (clienteCreado)="onClienteCreado()"></app-crear-cliente>
+
+<table *ngIf="clientes.length > 0">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Preferencia</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let cliente of clientes">
+      <td>{{ cliente.nombre }}</td>
+      <td>{{ cliente.preferenciaNotificacion }}</td>
+    </tr>
+  </tbody>
+</table>

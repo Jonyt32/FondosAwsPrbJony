@@ -18,7 +18,7 @@ public class SubscribirClienteAFondoEndpoint : EndpointWithoutRequest<ResultadoO
     public override void Configure()
     {
         Post("/clientes/{id}/{fondoId}/suscribir");
-        Roles("User");
+        Roles("Admin, User");
         AllowAnonymous();
     }
 

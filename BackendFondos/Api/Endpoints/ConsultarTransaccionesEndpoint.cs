@@ -20,7 +20,7 @@ public class ConsultarTransaccionesEndpoint : EndpointWithoutRequest<List<Transa
     public override void Configure()
     {
         Get("/clientes/transacciones/{id}");
-        Roles("User");
+        Roles("Admin, User");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
