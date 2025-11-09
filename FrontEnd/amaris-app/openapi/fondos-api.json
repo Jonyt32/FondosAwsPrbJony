@@ -1,0 +1,577 @@
+{
+    "x-generator": "NSwag v14.6.1.0 (NJsonSchema v11.5.1.0 (Newtonsoft.Json v13.0.0.0))",
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BackendFondos",
+        "version": "1.0.0"
+    },
+    "servers": [{
+        "url": "https://sbmkzb99ar.us-east-1.awsapprunner.com"
+    }],
+    "paths": {
+        "/clientes/actualizar-saldo-cliente/{id}/{saldo}": {
+            "post": {
+                "tags": [
+                    "Clientes"
+                ],
+                "operationId": "ActualizarSaldoClienteEndpoint",
+                "parameters": [{
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "saldo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [{
+                    "JWTBearerAuth": [
+                        "Admin"
+                    ]
+                }]
+            }
+        },
+        "/clientes/cancelar-suscripcion": {
+            "post": {
+                "tags": [
+                    "Clientes"
+                ],
+                "operationId": "CancelarSuscripcionEndpoint",
+                "requestBody": {
+                    "x-name": "CancelacionRequestDto",
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BackendFondosLambdasCancelarSuscripcionCancelacionRequestDto"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [{
+                    "JWTBearerAuth": [
+                        "User"
+                    ]
+                }]
+            }
+        },
+        "/fondos": {
+            "get": {
+                "tags": [
+                    "Fondos"
+                ],
+                "operationId": "ConsultarFondosEndpoint",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/BackendFondosApplicationDTOsFondoDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [{
+                    "JWTBearerAuth": [
+                        "Admin"
+                    ]
+                }]
+            }
+        },
+        "/clientes/transacciones/{id}": {
+            "get": {
+                "tags": [
+                    "Clientes"
+                ],
+                "operationId": "ConsultarTransaccionesEndpoint",
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/BackendFondosApplicationDTOsTransaccionDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [{
+                    "JWTBearerAuth": [
+                        "User"
+                    ]
+                }]
+            }
+        },
+        "/clientes/crear-cliente": {
+            "post": {
+                "tags": [
+                    "Clientes"
+                ],
+                "operationId": "CrearClienteEndpoint",
+                "requestBody": {
+                    "x-name": "ClienteDto",
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BackendFondosApplicationDTOsClienteDto"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [{
+                    "JWTBearerAuth": [
+                        "Admin"
+                    ]
+                }]
+            }
+        },
+        "/fondos/crear-fondo": {
+            "post": {
+                "tags": [
+                    "Fondos"
+                ],
+                "operationId": "CrearFondosEndpoint",
+                "requestBody": {
+                    "x-name": "FondoDto",
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BackendFondosApplicationDTOsFondoDto"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [{
+                    "JWTBearerAuth": [
+                        "Admin"
+                    ]
+                }]
+            }
+        },
+        "/clientes/{id}/fondos": {
+            "get": {
+                "tags": [
+                    "Clientes"
+                ],
+                "operationId": "FondosAsignadosClienteEndpoint",
+                "parameters": [{
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/BackendFondosApplicationDTOsFondoDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [{
+                    "JWTBearerAuth": [
+                        "User"
+                    ]
+                }]
+            }
+        },
+        "/clientes/{id}/{fondoId}/suscribir": {
+            "post": {
+                "tags": [
+                    "Clientes"
+                ],
+                "operationId": "SubscribirClienteAFondoEndpoint",
+                "parameters": [{
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fondoId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BackendFondosApplicationDTOsResultadoOperacionDto"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "BackendFondosApiEndpointsLoginEndpoint",
+                "requestBody": {
+                    "x-name": "AuthRequest",
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRequest"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/Usuarios/register": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "operationId": "BackendFondosApiEndpointsRegistrarUsuarioEndpoint",
+                "requestBody": {
+                    "x-name": "UsuarioDto",
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BackendFondosApplicationDTOsUsuarioDto"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [{
+                    "JWTBearerAuth": [
+                        "Admin"
+                    ]
+                }]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BackendFondosLambdasCancelarSuscripcionCancelacionRequestDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "clienteId": {
+                        "type": "string"
+                    },
+                    "fondoId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "BackendFondosApplicationDTOsFondoDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "fondoID": {
+                        "type": "string"
+                    },
+                    "nombreFondo": {
+                        "type": "string"
+                    },
+                    "montoMinimo": {
+                        "type": "number",
+                        "format": "decimal"
+                    },
+                    "categoria": {
+                        "type": "string"
+                    }
+                }
+            },
+            "BackendFondosApplicationDTOsTransaccionDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "tipo": {
+                        "type": "string"
+                    },
+                    "fondoID": {
+                        "type": "string"
+                    },
+                    "monto": {
+                        "type": "number",
+                        "format": "decimal"
+                    },
+                    "fecha": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "notificacion": {
+                        "type": "string"
+                    }
+                }
+            },
+            "BackendFondosApplicationDTOsClienteDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "saldoDisponible": {
+                        "type": "number",
+                        "format": "decimal"
+                    },
+                    "fondosActivos": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "preferenciaNotificacion": {
+                        "type": "string"
+                    },
+                    "nombre": {
+                        "type": "string"
+                    }
+                }
+            },
+            "BackendFondosApplicationDTOsResultadoOperacionDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "exito": {
+                        "type": "boolean"
+                    },
+                    "mensajeNotificacion": {
+                        "type": "string"
+                    },
+                    "clienteId": {
+                        "type": "string"
+                    },
+                    "fondoId": {
+                        "type": "string"
+                    },
+                    "tipo": {
+                        "$ref": "#/components/schemas/TipoTransaccion"
+                    }
+                }
+            },
+            "TipoTransaccion": {
+                "type": "integer",
+                "description": "",
+                "x-enumNames": [
+                    "Suscripcion",
+                    "Cancelacion",
+                    "CreacionUsuario"
+                ],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            },
+            "AuthResponse": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "expires": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "AuthRequest": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            },
+            "BackendFondosApplicationDTOsUsuarioDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "usuarioID": {
+                        "type": "string"
+                    },
+                    "nombreUsuario": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "rol": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "JWTBearerAuth": {
+                "type": "http",
+                "description": "Enter a JWT token to authorize the requests...",
+                "scheme": "Bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
