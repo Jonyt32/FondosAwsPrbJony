@@ -1,17 +1,35 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <label>Email</label>
-  <input formControlName="correoElectronico" type="email" />
-  <div *ngIf="loginForm.get('correoElectronico')?.invalid && loginForm.get('correoElectronico')?.touched">
-    Email inválido
+<div class="container-fluid vh-100 d-flex justify-content-center align-items-center bg-light">
+  <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+    <h4 class="mb-4 text-center">Iniciar sesión</h4>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()" autocomplete="off">
+      <div class="mb-3">
+        <label for="correo" class="form-label">Correo electrónico</label>
+        <input
+          id="correo"
+          type="email"
+          class="form-control"
+          placeholder="Correo electrónico"
+          formControlName="txtCorreo"
+          [class.is-invalid]="correoNoValido"
+        />
+        <div *ngIf="correoNoValido" class="invalid-feedback d-block">Ingrese el correo</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          class="form-control"
+          placeholder="Contraseña"
+          formControlName="txtPassword"
+          [class.is-invalid]="pass1NoValido"
+        />
+        <div *ngIf="pass1NoValido" class="invalid-feedback d-block">Ingrese la contraseña</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+    </form>
   </div>
-
-  <label>Contraseña</label>
-  <input formControlName="contrasena" type="password" />
-  <div *ngIf="loginForm.get('contrasena')?.invalid && loginForm.get('contrasena')?.touched">
-    Contraseña requerida
-  </div>
-
-  <button type="submit" [disabled]="loginForm.invalid">Ingresar</button>
-
-  <div *ngIf="errorMessage">{{ errorMessage }}</div>
-</form>
+</div>

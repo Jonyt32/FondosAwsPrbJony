@@ -1,7 +1,10 @@
 <aside class="sidebar">
   <ul>
-    <li *ngFor="let item of menuItems">
-      <a [routerLink]="['/' + item.toLowerCase().replace(' ', '')]">{{ item }}</a>
+    <li *ngFor="let item of visibleItems">
+      <a [routerLink]="item.path">{{ item.label }}</a>
     </li>
   </ul>
 </aside>
+
+
+

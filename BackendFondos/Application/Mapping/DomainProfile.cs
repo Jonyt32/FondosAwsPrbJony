@@ -9,10 +9,14 @@ namespace BackendFondos.Application.Mapping
     {
         public DomainProfile()
         {
-            CreateMap<ClienteDto, Cliente>()
-                .ForMember(dest => dest.ClienteID, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()));
 
-            CreateMap<Cliente, ClienteDto>();
+            CreateMap<Cliente, ClienteDto>()
+                .ForMember(dest => dest.FondosActivos, opt => opt.MapFrom(src => src.FondosActivos != null ? src.FondosActivos.ToList() : new List<string>()))
+                .ForMember(dest => dest.SaldoDisponible, opt=> opt.MapFrom(src => src.Saldo != null ? src.Saldo : 0));
+
+            CreateMap<ClienteDto, Cliente>()
+                .ForMember(dest => dest.FondosActivos, opt => opt.MapFrom(src => src.FondosActivos != null ? src.FondosActivos.ToList() : new List<string>()))
+                .ForMember(dest => dest.Saldo, opt => opt.MapFrom(src => src.SaldoDisponible != null ? src.SaldoDisponible : 0));
 
             CreateMap<FondoDto, Fondo>()
                 .ForMember(dest => dest.FondoID, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()));

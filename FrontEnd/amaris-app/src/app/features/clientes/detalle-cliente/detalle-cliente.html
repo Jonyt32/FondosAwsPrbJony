@@ -1,33 +1,83 @@
-<h2>Fondos disponibles</h2>
+<div class="container mt-4 mb-4">
+  <h4 class="mb-3">Fondos disponibles</h4>
 
-<table>
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Categoría</th>
-      <th>Monto Mínimo</th>
-      <th>Suscripción</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let fondo of fondos">
-      <td>{{ fondo.nombreFondo }}</td>
-      <td>{{ fondo.categoria }}</td>
-      <td>{{ fondo.montoMinimo | currency:'COP' }}</td>
-      <td>
-        <button (click)="toggleSuscripcion(fondo.fondoID!)">
-          {{ estaSuscrito(fondo.fondoID!) ? 'Quitar suscripción' : 'Suscribirse' }}
-        </button>
-      </td>
-    </tr>
-  </tbody>
-  <button (click)="mostrarHistorial = !mostrarHistorial">
-  {{ mostrarHistorial ? 'Ocultar Historial' : 'Ver Historial' }}
-</button>
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3">
+        <i class="bi bi-person-circle me-2"></i> {{ cliente.nombre }}
+      </h5>
+      <p class="mb-2">
+        <i class="bi bi-envelope me-2"></i> <strong>Email:</strong> {{ cliente.email }}
+      </p>
+      <p>
+        <i class="bi bi-cash-coin me-2"></i> <strong>Saldo disponible:</strong>
+        {{ cliente.saldoDisponible | currency:'COP ':'symbol':'1.0-0' }}
+      </p>
+    </div>
+  </div>
 
-<app-historial-transacciones
-  *ngIf="mostrarHistorial"
-  [clienteId]="cliente.clienteID || ''">
-</app-historial-transacciones>
+  <table class="table table-bordered table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Monto Mínimo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let fondo of fondos">
+        <td>{{ fondo.nombreFondo }}</td>
+        <td>{{ fondo.categoria }}</td>
+        <td>{{ fondo.montoMinimo | currency:'COP ' }}</td>
+        <td>
+          <button class="btn btn-sm btn-success me-2"
+          [disabled]="procesandoSuscripcion[fondo.fondoID!] || estaSuscrito(fondo.fondoID!)"
+        (click)="suscribirseAFondo(fondo)">
+            <span *ngIf="procesandoSuscripcion[fondo.fondoID!]">
+              <i class="bi bi-arrow-repeat"></i> Procesando...
+            </span>
+            <span *ngIf="!procesandoSuscripcion[fondo.fondoID!]">
+              Suscribirse
+            </span>
+          </button>
 
-</table>
+
+          <button class="btn btn-sm btn-danger"
+                  (click)="cancelarSuscripcion(fondo)">
+            Cancelar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Mensaje de respuesta -->
+  <div *ngIf="mensajeSubscripcion" class="alert alert-info mt-3">
+    {{ mensajeSubscripcion }}
+  </div>
+
+  <div class="mt-4">
+    <button class="btn btn-outline-secondary" (click)="abrirHistorial()">
+      Ver historial de transacciones
+    </button>
+
+  </div>
+
+  <div class="modal fade" id="historialModal" tabindex="-1" aria-labelledby="historialModalLabel" aria-hidden="true" #historialModalRef>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="historialModalLabel">Historial de transacciones</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <app-historial-transacciones [clienteId]="cliente.clienteID || ''"></app-historial-transacciones>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

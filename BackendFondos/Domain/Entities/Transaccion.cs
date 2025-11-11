@@ -10,10 +10,10 @@ namespace BackendFondos.Domain.Entities
     {
         [DynamoDBHashKey]
         public string TransaccionID { get; set; }
-        [DynamoDBProperty]
+        [DynamoDBGlobalSecondaryIndexHashKey("GSI_ClienteID")]
+
         public string ClienteID { get; set; } = string.Empty;
         [DynamoDBProperty(Converter = typeof(EnumAsStringConverter<TipoTransaccion>))]
-
         public TipoTransaccion Tipo { get; set; }
         [DynamoDBProperty]
         public string FondoID { get; set; } = string.Empty;

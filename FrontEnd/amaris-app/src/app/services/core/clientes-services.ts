@@ -69,7 +69,8 @@ export class ClientesServices {
     const clientDto: BackendFondosApplicationDTOsClienteDto = {
       nombre: cliente.nombre,
       preferenciaNotificacion: cliente.preferenciaNotificacion,
-      saldoDisponible: 1000 // valor inicial fijo
+      saldoDisponible: cliente.saldoDisponible,
+      email: cliente.email
     };
 
     return this.clienteService.crearClienteEndpoint(clientDto).pipe(
@@ -97,6 +98,45 @@ export class ClientesServices {
       })
     );
   }
+  
+  filtrarClientesPorCorreo(correo: string): Observable<Cliente[]> {
+    if(correo.trim() === '') {
+      correo = 'todos';
+    }
 
+    return this.clienteService.backendFondosApiEndpointsFiltrarClienteEndpoint(correo).pipe(
+      map((dtoList: BackendFondosApplicationDTOsClienteDto[]) =>
+        dtoList.map(dto => ({
+          clienteID: dto.clienteID ?? '',
+          nombre: dto.nombre ?? '',
+          email: dto.email ?? '',
+          saldoDisponible: dto.saldoDisponible ?? 0,
+          fondosActivos: dto.fondosActivos ?? [],
+          preferenciaNotificacion: dto.preferenciaNotificacion ?? 'email'
+        }))
+      ),
+      catchError(error => {
+        console.error('Error al filtrar cliente por correo:', error);
+        return throwError(() => new Error('No se pudo filtrar el cliente.'));
+      })
+    );
+  }
+
+  consultarClientePorId(clientId: string): Observable<Cliente> {
+  return this.clienteService.backendFondosApiEndpointsConsultarClienteEndpoint(clientId).pipe(
+    map(dto => ({
+      clienteID: dto.clienteID ?? '',
+      nombre: dto.nombre ?? '',
+      email: dto.email ?? '',
+      saldoDisponible: dto.saldoDisponible ?? 0,
+      fondosActivos: dto.fondosActivos ?? [],
+      preferenciaNotificacion: dto.preferenciaNotificacion ?? 'email'
+    })),
+    catchError(error => {
+      console.error(`[ClienteService] Error al consultar cliente por ID (${clientId}):`, error);
+      return throwError(() => new Error('No se pudo consultar el cliente.'));
+    })
+  );
+}
 
 }

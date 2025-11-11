@@ -80,7 +80,32 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
 });
 
+
+var origins = (builder.Configuration["Cors:AllowedOrigins"] ?? "")
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFront", p =>
+    {
+        if (origins.Length == 0)
+        {
+            p.WithOrigins("http://localhost:4200");
+        }
+        else
+        {
+            p.WithOrigins(origins);
+        }
+
+        p.AllowAnyHeader()
+         .AllowAnyMethod()
+         .SetPreflightMaxAge(TimeSpan.FromHours(12));
+    });
+});
+
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -99,7 +124,7 @@ if (app.Environment.IsDevelopment() || builder.Configuration["App:ResetOnStartup
     await InitialConfiguration.ResetDataAsync(usuarioService, fondoService, builder.Configuration);
 }
 
-
+app.UseCors("AllowFront");
 app.UseAuthentication();
 app.UseAuthorization();
 

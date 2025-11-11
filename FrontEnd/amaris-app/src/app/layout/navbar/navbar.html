@@ -1,6 +1,17 @@
-<nav class="navbar">
-  <div class="logo">Amaris App</div>
-  <div class="user-info">
-    <span>{{ usuario }} ({{ rol }})</span>
+<!-- Navbar global -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">FondosApp</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" routerLink="/clientes">Clientes</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/usuarios">Usuarios</a></li>
+        <!--<li class="nav-item"><a class="nav-link" (click)="logout()">Salir</a></li>-->
+        <li class="nav-item"><a class="nav-link" >Salir</a></li>
+      </ul>
+    </div>
   </div>
 </nav>

@@ -9,7 +9,7 @@ import { LayoutModule } from './layout/layout-module';
 import { FondosModule } from './features/fondos/fondos-module';
 import { UsuariosModule } from './features/usuarios/usuarios-module';
 import { TransaccionesModule } from './features/transacciones/transacciones-module';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './services/core/auth-interceptor';
 import { HistorialTransacciones } from './features/clientes/historial-transacciones/historial-transacciones';
 import { ClientesModule } from './features/clientes/clientes-module';
@@ -21,6 +21,7 @@ import { ClientesModule } from './features/clientes/clientes-module';
 
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     AuthModule,
@@ -29,7 +30,8 @@ import { ClientesModule } from './features/clientes/clientes-module';
     ClientesModule,
     FondosModule,
     UsuariosModule,
-    TransaccionesModule
+    TransaccionesModule,
+    
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

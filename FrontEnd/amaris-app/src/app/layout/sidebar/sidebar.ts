@@ -8,25 +8,25 @@ import { StorageService } from '../../services/core/storage';
   styleUrl: './sidebar.scss',
 })
 export class Sidebar {
-  rol: string | null = null;
+  rol: string  = "";
 
   constructor(private storage: StorageService){
-
   }
 
-  get menuItems(): string[] {
-    switch (this.rol) {
-      case 'Admin':
-        return ['Usuarios', 'Fondos', 'Transacciones'];
-      case 'User':
-        return ['Mis Fondos', 'Mis Transacciones'];
-      default:
-        return [];
-    }
-  }
+  menuItems = [
+    { label: 'Clientes', path: '/clientes', roles: ['Admin', 'User'] },
+    { label: 'Fondos', path: '/fondos', roles: ['User'] },
+    { label: 'Usuarios', path: '/usuarios', roles: ['Admin'] }
+  ];
+
 
   ngOnInit(): void {
-    this.rol = this.storage.get('rol');
+    this.rol = this.storage.get('rol') || "";
   }
+
+  get visibleItems() {
+    return this.menuItems.filter(item => item.roles.includes(this.rol));
+  }
+
 
 }

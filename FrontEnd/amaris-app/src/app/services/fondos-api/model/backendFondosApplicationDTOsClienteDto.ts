@@ -10,9 +10,11 @@
 
 
 export interface BackendFondosApplicationDTOsClienteDto { 
-    saldoDisponible?: number;
-    fondosActivos?: Array<string>;
-    preferenciaNotificacion?: string;
-    nombre?: string;
+    saldoDisponible?: number | null;
+    fondosActivos?: Array<string> | null;
+    preferenciaNotificacion?: string | null;
+    nombre?: string | null;
+    clienteID?: string | null;
+    email?: string | null;
 }
 

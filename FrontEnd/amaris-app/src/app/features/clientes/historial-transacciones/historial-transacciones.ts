@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Transaccion } from '../../../model/models';
 import { ClientesServices } from '../../../services/core/clientes-services';
 
@@ -9,13 +9,19 @@ import { ClientesServices } from '../../../services/core/clientes-services';
   styleUrl: './historial-transacciones.scss',
 })
 export class HistorialTransacciones {
-  @Input() clienteId: string = '';
+  @Input() clienteId !: string;
+  @Output() actualizar = new EventEmitter<void>();
+
   transacciones: Transaccion[] = [];
 
   constructor(private transaccionesServices: ClientesServices) {}
 
   ngOnInit(): void {
-    if (this.clienteId) {
+    this.actualizar.emit();
+  }
+
+  cargarHistorial(): void {
+  if (this.clienteId) {
       this.transaccionesServices.obtenerTransaccionesCliente(this.clienteId).subscribe({
         next: (data) => this.transacciones = data,
         error: (err) => console.error(err.message)

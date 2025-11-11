@@ -48,32 +48,37 @@ namespace BackendFondos.Domain.Services
             if (fondo == null)
                 return Error("El fondo no existe", clienteId, fondoId);
 
-            var fondosActivos = await _fondoRepository.ObtenerFondosPorIdsAsync(cliente.FondosActivos);
-
             try
             {
-                _suscripcionValidator.Validar(cliente, fondo, fondosActivos);
+                if (cliente.FondosActivos == null || cliente.FondosActivos.Count > 0) 
+                {
+                    var fondosActivos = await _fondoRepository.ObtenerFondosPorIdsAsync(cliente.FondosActivos);
+                    _suscripcionValidator.Validar(cliente, fondo, fondosActivos);
+                }
+
+                cliente.FondosActivos.Add(fondoId);
+                await _clienteRepository.ActualizarAsync(cliente);
+                string notificacion = cliente.PreferenciaNotificacion;
+                await CrearTransaccionAsync(clienteId, fondo, TipoTransaccion.Suscripcion, notificacion);
+                await NotificarAsync(cliente, fondo, TipoTransaccion.Suscripcion);
+
+                _log.Info($"Suscripción completada para cliente {clienteId} al fondo {fondoId}");
+
+                return new ResultadoOperacionDto
+                {
+                    Exito = true,
+                    MensajeNotificacion = $"Suscripción exitosa al fondo {fondo.NombreFondo} por ${fondo.MontoMinimo:N0}",
+                    ClienteId = clienteId,
+                    FondoId = fondoId,
+                    Tipo = TipoTransaccion.Suscripcion
+                };
             }
             catch (InvalidOperationException ex)
             {
                 return Error(ex.Message, clienteId, fondoId);
             }
 
-            cliente.FondosActivos.Add(fondoId);
-            await _clienteRepository.ActualizarAsync(cliente);
-            await CrearTransaccionAsync(clienteId, fondo, TipoTransaccion.Suscripcion);
-            await NotificarAsync(cliente, fondo, TipoTransaccion.Suscripcion);
-
-            _log.Info($"Suscripción completada para cliente {clienteId} al fondo {fondoId}");
-
-            return new ResultadoOperacionDto
-            {
-                Exito = true,
-                MensajeNotificacion = $"Suscripción exitosa al fondo {fondo.NombreFondo} por ${fondo.MontoMinimo:N0}",
-                ClienteId = clienteId,
-                FondoId = fondoId,
-                Tipo = TipoTransaccion.Suscripcion
-            };
+            
         }
 
         public async Task<ResultadoOperacionDto> CancelarSuscripcionAsync(string clienteId, string fondoId)
@@ -99,7 +104,10 @@ namespace BackendFondos.Domain.Services
 
             cliente.FondosActivos.Remove(fondoId);
             await _clienteRepository.ActualizarAsync(cliente);
-            await CrearTransaccionAsync(clienteId, fondo, TipoTransaccion.Cancelacion);
+            string notificacion = cliente.PreferenciaNotificacion;
+           
+
+            await CrearTransaccionAsync(clienteId, fondo, TipoTransaccion.Cancelacion, notificacion);
             await NotificarAsync(cliente, fondo, TipoTransaccion.Cancelacion);
 
             _log.Info($"Cancelación completada para cliente {clienteId} al fondo {fondoId}");
@@ -126,19 +134,30 @@ namespace BackendFondos.Domain.Services
             };
         }
 
-        private async Task CrearTransaccionAsync(string clienteId, Fondo fondo, TipoTransaccion tipo)
+        private async Task CrearTransaccionAsync(string clienteId, Fondo fondo, TipoTransaccion tipo, string notificacion)
         {
-            var transaccion = new Transaccion
+            try
             {
-                ClienteID = clienteId,
-                FondoID = fondo.FondoID,
-                Tipo = tipo,
-                Monto = fondo.MontoMinimo,
-                Fecha = DateTime.UtcNow
-            };
+                var transaccion = new Transaccion
+                {
+                    TransaccionID = Guid.NewGuid().ToString(),
+                    ClienteID = clienteId,
+                    FondoID = fondo.FondoID,
+                    Tipo = tipo,
+                    Monto = fondo.MontoMinimo,
+                    Fecha = DateTime.UtcNow,
+                    Notificacion = notificacion
+                };
 
-            _transaccionValidator.Validar(transaccion);
-            await _transaccionRepository.CrearAsync(transaccion);
+                _transaccionValidator.Validar(transaccion);
+                await _transaccionRepository.CrearAsync(transaccion);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         private async Task NotificarAsync(Cliente cliente, Fondo fondo, TipoTransaccion tipo)

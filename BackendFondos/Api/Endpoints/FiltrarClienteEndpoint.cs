@@ -1,16 +1,17 @@
 ﻿using BackendFondos.Application.DTOs;
 using BackendFondos.Domain.Services;
 using FastEndpoints;
+using System.Collections.Generic;
 
 namespace BackendFondos.Api.Endpoints
 {
     public class FiltrarClienteEndpoint: EndpointWithoutRequest
     {
         private readonly IClienteService _clienteService;
-        private readonly ILogger<ActualizarSaldoClienteEndpoint> _logger;
-        private readonly AutoMapper.IMapper _mapper;
+        private readonly ILogger<FiltrarClienteEndpoint> _logger;
+        
 
-        public FiltrarClienteEndpoint(IClienteService clienteService, AutoMapper.IMapper mapper, ILogger<ActualizarSaldoClienteEndpoint> logger)
+        public FiltrarClienteEndpoint(IClienteService clienteService, ILogger<FiltrarClienteEndpoint> logger)
         {
             _clienteService = clienteService;
             _logger = logger;
@@ -18,7 +19,7 @@ namespace BackendFondos.Api.Endpoints
 
         public override void Configure()
         {
-            Post("/clientes/filtrar-cliente/{email}");
+            Get("/clientes/filtrar-cliente/{email}");
             Roles("Admin, User");
         }
 
@@ -26,11 +27,37 @@ namespace BackendFondos.Api.Endpoints
         {
             try
             {
-                var email = Route<string>("email")!;
-
+                var email = Route<string>("email");
+                var dto = new List<ClienteDto>();
                 var lstCliente = await _clienteService.FiltrarClientes(email);
-                var resp = _mapper.Map<List<ClienteDto>>(lstCliente);
-                await Send.OkAsync(resp);
+
+                if (lstCliente == null || lstCliente.Count == 0)
+                {
+                    await Send.OkAsync(dto);
+                    return;
+                }
+
+                try
+                {
+                    dto = lstCliente.Select(x => new ClienteDto() 
+                    {
+                        ClienteID = x.ClienteID,
+                        Email = x.Email,
+                        FondosActivos = (x.FondosActivos != null) ? x.FondosActivos.ToList(): new List<string>(),
+                        Nombre = x.Nombre,
+                        SaldoDisponible = x.Saldo,
+                        PreferenciaNotificacion = x.PreferenciaNotificacion
+                    }).ToList();
+                    
+                    await Send.OkAsync(dto);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error al mapear Cliente → ClienteDto");
+                    await Send.ErrorsAsync();
+                }
+
+
             }
             catch (Exception ex)
             {

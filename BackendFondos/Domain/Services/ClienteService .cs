@@ -56,10 +56,11 @@ namespace BackendFondos.Domain.Services
             var lstClientes = new List<Cliente>();
             try
             {
-                if (string.IsNullOrWhiteSpace(email))
+                if (email != "todos")
                 {
                     var filtro = await ObtenerClientePorEmailAsync(email);
-                    lstClientes.Add(filtro);
+                    if(filtro != null)
+                        lstClientes.Add(filtro);
                 }
                 else 
                 {
@@ -77,7 +78,7 @@ namespace BackendFondos.Domain.Services
         {
             var lst = await _clienteRepo.ObtenerTodosAsync();
             if (lst == null)
-                throw new InvalidOperationException("No existen fondos");
+                return new List<Cliente>();
 
             return lst.ToList();
         }
