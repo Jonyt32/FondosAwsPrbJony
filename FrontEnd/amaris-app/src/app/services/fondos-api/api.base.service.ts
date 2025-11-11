@@ -10,9 +10,10 @@
 import { HttpHeaders, HttpParams, HttpParameterCodec } from '@angular/common/http';
 import { CustomHttpParameterCodec } from './encoder';
 import { Configuration } from './configuration';
+import { environment } from '../../../environments/environment';
 
 export class BaseService {
-    protected basePath = 'https://localhost:7280';
+    protected basePath = environment.basePath || 'https://sbmkzb99ar.us-east-1.awsapprunner.com/';
     public defaultHeaders = new HttpHeaders();
     public configuration: Configuration;
     public encoder: HttpParameterCodec;

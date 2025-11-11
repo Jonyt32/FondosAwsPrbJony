@@ -88,20 +88,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFront", p =>
     {
-        if (origins.Length == 0)
-        {
-            p.WithOrigins("http://localhost:4200");
-        }
-        else
-        {
-            p.WithOrigins(origins);
-        }
-
-        p.AllowAnyHeader()
-         .AllowAnyMethod()
-         .SetPreflightMaxAge(TimeSpan.FromHours(12));
+        p.WithOrigins(
+            "http://localhost:4200", // desarrollo local
+            "http://fondo-amr-jony.s3-website-us-east-1.amazonaws.com" // frontend en S3
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .SetPreflightMaxAge(TimeSpan.FromHours(12));
     });
 });
+
 
 var app = builder.Build();
 
