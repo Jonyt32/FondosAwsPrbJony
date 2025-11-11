@@ -32,6 +32,7 @@ export class RegistrarUsuario implements OnInit {
   }
 
   registrarUsuario(): void {
+    debugger;
     if (this.formUsuario.invalid) return;
 
     const nuevoUsuario: Usuario = {
@@ -40,7 +41,7 @@ export class RegistrarUsuario implements OnInit {
       rol: this.formUsuario.value.rol,
       password: this.formUsuario.value.password
     };
-
+    
     this.usuariosService.registrarUsuario(nuevoUsuario).subscribe({
       next: () => this.router.navigate(['/usuarios']),
       error: err => console.error('Error al registrar usuario:', err)

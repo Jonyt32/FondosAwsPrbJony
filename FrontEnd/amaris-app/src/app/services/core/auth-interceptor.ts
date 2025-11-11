@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const publicUrls = ['/login', '/register', '/crear-usuario'];
+    const publicUrls = ['/login'];
     const token = localStorage.getItem('token'); 
     const isPublic = publicUrls.some(url => req.url.includes(url));
 

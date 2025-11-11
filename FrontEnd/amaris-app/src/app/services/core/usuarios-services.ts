@@ -22,6 +22,7 @@ export class UsuariosServices {
 
 
   registrarUsuario(usuario: Usuario): Observable<void> {
+    debugger;
     if (!usuario) {
       return throwError(() => new Error('El objeto usuario es nulo o indefinido.'));
     }
