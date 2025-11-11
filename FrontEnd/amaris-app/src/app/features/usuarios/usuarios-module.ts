@@ -18,8 +18,8 @@ import { ListarUsuarios } from './listar-usuarios/listar-usuarios';
     ReactiveFormsModule,
     RouterModule.forChild([
       { path: '', component: ListarUsuarios },
-      { path: 'listar-usuario', component: ListarUsuarios, canActivate: [AuthGuard] },
-      { path: 'registrar-usuario', component: RegistrarUsuario, canActivate: [AuthGuard] }
+      { path: 'listar-usuario', component: ListarUsuarios },
+      { path: 'registrar-usuario', component: RegistrarUsuario }
     ])
   ]
 })

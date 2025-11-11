@@ -21,7 +21,7 @@ public class ConsultarFondosEndpoint : EndpointWithoutRequest<List<FondoDto>>
     public override void Configure()
     {
         Get("/fondos");
-        Roles("Admin");
+        Roles("Admin, User");
         //AllowAnonymous();
     }
 

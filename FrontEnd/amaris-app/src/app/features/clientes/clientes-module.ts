@@ -19,10 +19,10 @@ import { AuthGuard } from '../../services/core/auth-guard';
     ReactiveFormsModule,
     RouterModule.forChild([
       { path: '', component: ListarCliente },
-      { path: 'listar-cliente', component: ListarCliente, canActivate: [AuthGuard] },
-      { path: 'crear-cliente', component: CrearCliente, canActivate: [AuthGuard] },
-      { path: 'detalle-cliente/:id', component: DetalleCliente, canActivate: [AuthGuard],data: {  renderMode: 'server' }},
-      { path: 'cliente-transacciones', component: HistorialTransacciones, canActivate: [AuthGuard] }
+      { path: 'listar-cliente', component: ListarCliente},
+      { path: 'crear-cliente', component: CrearCliente },
+      { path: 'detalle-cliente/:id', component: DetalleCliente },
+      { path: 'cliente-transacciones', component: HistorialTransacciones }
     ])
   ]
 })

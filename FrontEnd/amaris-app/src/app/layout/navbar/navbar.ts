@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { StorageService } from '../../services/core/storage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -11,7 +12,7 @@ export class Navbar {
   usuario: string | null = null;
   rol: string | null = null;
 
-  constructor(private storage: StorageService) {
+  constructor(private storage: StorageService, private router:Router) {
 
   }
   
@@ -19,5 +20,11 @@ export class Navbar {
     this.usuario = this.storage.get('usuario') ?? 'Invitado';
     this.rol = this.storage.get('rol') ?? 'Sin rol';
   }
+
+  logout(): void {
+    this.storage.remove('token');
+    this.router.navigate(['/login']);
+  }
+
 
 }

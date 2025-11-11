@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Unauthorized } from './unauthorized/unauthorized';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    Unauthorized,
+  ],
   imports: [
     CommonModule
   ]
