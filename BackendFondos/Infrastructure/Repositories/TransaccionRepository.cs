@@ -16,13 +16,9 @@ namespace BackendFondos.Infrastructure.Repositories
 
         public async Task<IEnumerable<Transaccion>> ObtenerPorClienteAsync(string clienteId)
         {
-            var query = _context.QueryAsync<Transaccion>(clienteId, new DynamoDBOperationConfig
-            {
-                IndexName = "GSI_ClienteID"
-            });
+            var query = _context.QueryAsync<Transaccion>(clienteId, new DynamoDBOperationConfig(){IndexName = "GSI_ClienteID" });
 
             return await query.GetRemainingAsync();
-
         }
 
         public async Task<Transaccion?> ObtenerPorIdAsync(string clienteId, string transaccionId)

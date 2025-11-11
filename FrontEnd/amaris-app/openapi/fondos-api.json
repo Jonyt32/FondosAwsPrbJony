@@ -389,6 +389,42 @@
         ]
       }
     },
+    "/Usuarios/Listar-usuarios": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "operationId": "BackendFondosApiEndpointsConsultarUsuariosEndpoint",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BackendFondosApplicationDTOsUsuarioDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "JWTBearerAuth": [
+              "Admin"
+            ]
+          }
+        ]
+      }
+    },
     "/clientes/filtrar-cliente/{email}": {
       "get": {
         "tags": [
@@ -624,6 +660,27 @@
           2
         ]
       },
+      "BackendFondosApplicationDTOsUsuarioDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "usuarioID": {
+            "type": "string"
+          },
+          "nombreUsuario": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "rol": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
       "AuthResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -661,27 +718,6 @@
           "password": {
             "type": "string",
             "minLength": 1
-          }
-        }
-      },
-      "BackendFondosApplicationDTOsUsuarioDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "usuarioID": {
-            "type": "string"
-          },
-          "nombreUsuario": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "rol": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
           }
         }
       }
